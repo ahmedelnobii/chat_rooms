@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatBubble extends StatelessWidget {
-  bool isFromSender = true;
-  ChatBubble({super.key, this.isFromSender = true});
+  final bool isFromSender;
+  const ChatBubble({super.key, this.isFromSender = true});
 
   @override
   Widget build(BuildContext context) {
-    // Replace with your logic to determine if the message is sent by the user
     return Align(
       alignment: isFromSender ? Alignment.centerRight : Alignment.centerLeft,
       child: Padding(
@@ -18,9 +17,7 @@ class ChatBubble extends StatelessWidget {
               : CrossAxisAlignment.start,
           children: [
             Text(
-              isFromSender
-                  ? "You"
-                  : "Other User", // Replace with the sender's name
+              isFromSender ? "You" : "Other User",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: isFromSender ? Colors.blue : Colors.grey,
@@ -34,7 +31,7 @@ class ChatBubble extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
-                "Hello, this is a chat message!", // Replace with your message text
+                "Hello, this is a chat message!",
                 style: TextStyle(
                   color: isFromSender ? Colors.white : Colors.black,
                 ),

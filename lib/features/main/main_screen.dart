@@ -19,6 +19,16 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: currentIndex == 0
+          ? FloatingActionButton(
+              shape: CircleBorder(),
+              backgroundColor: AppColors.primiary,
+              onPressed: () {
+                // Handle FAB action for "My Rooms" tab
+              },
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
       extendBody: true,
       body: widget.child,
       bottomNavigationBar: Padding(

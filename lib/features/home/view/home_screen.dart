@@ -1,3 +1,4 @@
+import 'package:chat_rooms/core/consts/app_colors.dart';
 import 'package:chat_rooms/features/home/view/widgets/custom_app_bar_item.dart';
 import 'package:chat_rooms/features/home/view/widgets/selected_tab.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class HomeScreen extends StatelessWidget {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
+       
         backgroundColor: const Color(0xffF6F9FE),
         body: SafeArea(
           bottom: false,
@@ -40,7 +42,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
             body: Padding(
-              padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 70.h),
+              padding: EdgeInsets.only(left: 8.w, right: 8.w, bottom: 70.h),
               child: TabBarView(
                 children: tabs.map((tab) => SelectedTab(tab: tab)).toList(),
               ),
@@ -70,7 +72,7 @@ class _PinnedTabBarDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     return Material(
-      color: Color(0xffF6F9FE),
+      color: AppColors.background,
       elevation: overlapsContent ? 2 : 0,
       child: tabBar,
     );

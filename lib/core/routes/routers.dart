@@ -50,7 +50,7 @@ final routers = GoRouter(
       pageBuilder: (context, state) {
         return CustomTransitionPage<void>(
           key: state.pageKey,
-          child: ChatScreen(),
+          child: const ChatScreen(),
           transitionDuration: const Duration(milliseconds: 100),
           reverseTransitionDuration: const Duration(milliseconds: 100),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {

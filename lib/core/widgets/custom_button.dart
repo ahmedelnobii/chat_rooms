@@ -10,6 +10,8 @@ class CustomButton extends StatelessWidget {
     this.fontsize = 16,
     this.weight = .bold,
     this.padding = 16,
+    this.backgroundColor = AppColors.primiary,
+    this.forgroundColor = Colors.white,
   });
 
   final String text;
@@ -17,14 +19,17 @@ class CustomButton extends StatelessWidget {
   final double fontsize;
   final FontWeight weight;
   final double padding;
+  final Color backgroundColor;
+  final Color forgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primiary,
-        foregroundColor: Colors.white,
+        elevation: 0,
+        backgroundColor: backgroundColor,
+        foregroundColor: forgroundColor,
       ),
       child: Padding(
         padding: EdgeInsets.all(padding.r),

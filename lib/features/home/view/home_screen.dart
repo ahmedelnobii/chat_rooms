@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
           child: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverAppBar(
-                backgroundColor: Colors.white,
+                backgroundColor: Color(0xffF6F9FE),
                 foregroundColor: Colors.black,
                 pinned: false,
                 forceElevated: innerBoxIsScrolled,
@@ -30,7 +30,6 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {},
                     icon: const Icon(Icons.notifications_none_rounded),
                   ),
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.person)),
                 ],
               ),
               SliverPersistentHeader(
@@ -71,7 +70,7 @@ class _PinnedTabBarDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     return Material(
-      color: Colors.white,
+      color: Color(0xffF6F9FE),
       elevation: overlapsContent ? 2 : 0,
       child: tabBar,
     );

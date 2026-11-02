@@ -1,8 +1,9 @@
-import 'package:chat_rooms/core/consts/app_colors.dart';
 import 'package:chat_rooms/core/consts/app_images.dart';
+import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomRoomIcon extends StatelessWidget {
   const CustomRoomIcon({super.key});
@@ -40,7 +41,9 @@ class CustomRoomIcon extends StatelessWidget {
             Spacer(),
             CustomButton(
               text: "Join",
-              onPressed: () {},
+              onPressed: () {
+                context.push(AppRouts.chatScreen);
+              },
               fontsize: 16,
               weight: .w400,
               padding: 4,

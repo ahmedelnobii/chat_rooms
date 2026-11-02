@@ -45,11 +45,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(16.0.r),
+              padding: EdgeInsets.symmetric(horizontal: 16.0.r),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    SizedBox(height: 50.h),
                     Text(
                       "Create Account",
                       textAlign: TextAlign.center,

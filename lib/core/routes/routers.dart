@@ -51,10 +51,16 @@ final routers = GoRouter(
         return CustomTransitionPage<void>(
           key: state.pageKey,
           child: ChatScreen(),
-          transitionDuration: const Duration(milliseconds: 400),
-          reverseTransitionDuration: const Duration(milliseconds: 400),
+          transitionDuration: const Duration(milliseconds: 100),
+          reverseTransitionDuration: const Duration(milliseconds: 100),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
           },
         );
       },

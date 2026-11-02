@@ -6,6 +6,7 @@ import 'package:chat_rooms/features/auth/view/widgets/custom_text_fieled.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -74,14 +75,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: .stretch,
                       children: [
                         Text(
-                          "Welcome back",
-                          style: TextStyle(fontSize: 24.sp, fontWeight: .bold),
+                          "Welcome Back",
+                          style: TextStyle(
+                            fontSize: 24.sp,
+                            fontWeight: .bold,
+                            fontFamily: GoogleFonts.satisfy().fontFamily,
+                          ),
                         ),
                         Text(
                           "Sign in to jump right back into your communities and live watch parties.",
                           style: TextStyle(
+                            fontFamily: GoogleFonts.aboreto().fontFamily,
+
                             fontSize: 14.sp,
-                            fontWeight: .w400,
+                            fontWeight: .w600,
                             color: Colors.grey,
                           ),
                         ),

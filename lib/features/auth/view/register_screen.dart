@@ -5,6 +5,7 @@ import 'package:chat_rooms/features/auth/view/widgets/custom_text_fieled.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -54,19 +55,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Text(
                       "Create Account",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 22.sp, fontWeight: .w500),
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.aboreto().fontFamily,
+                        fontSize: 22.sp,
+                        fontWeight: .w700,
+                      ),
                     ),
                     SizedBox(height: 16.h),
                     Text(
                       "Create an account",
-                      style: TextStyle(fontSize: 24.sp, fontWeight: .bold),
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.satisfy().fontFamily,
+                        fontSize: 24.sp,
+                        fontWeight: .bold,
+                      ),
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      "Join Chat Club to discover curated films and watch with friends.",
+                      "Join Chat Club to discover new friends.",
                       style: TextStyle(
                         fontSize: 14.sp,
-                        fontWeight: .w400,
+                        fontWeight: .w600,
+                        fontFamily: GoogleFonts.aboreto().fontFamily,
                         color: Colors.grey,
                       ),
                     ),

@@ -1,6 +1,6 @@
 import 'package:chat_rooms/core/routes/app_routs.dart';
-import 'package:chat_rooms/features/auth/view/login_screen.dart';
-import 'package:chat_rooms/features/auth/view/register_screen.dart';
+import 'package:chat_rooms/features/auth/presentation/login_screen.dart';
+import 'package:chat_rooms/features/auth/presentation/register_screen.dart';
 import 'package:chat_rooms/features/chat/chat_screen.dart';
 import 'package:chat_rooms/features/home/view/home_screen.dart';
 import 'package:chat_rooms/features/liked/liked_screen.dart';

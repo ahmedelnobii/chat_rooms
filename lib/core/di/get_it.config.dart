@@ -17,6 +17,8 @@ import 'package:chat_rooms/features/auth/data/data_source/remote/remote_auth_dat
 import 'package:chat_rooms/features/auth/data/repo/auth_repo.dart' as _i19;
 import 'package:chat_rooms/features/auth/data/repo/auth_repo_impl.dart'
     as _i233;
+import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart'
+    as _i124;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -35,6 +37,7 @@ extension GetItInjectableX on _i174.GetIt {
         remoteAuthDataSource: gh<_i74.RemoteAuthDataSource>(),
       ),
     );
+    gh.singleton<_i124.AuthCubit>(() => _i124.AuthCubit(gh<_i19.AuthRepo>()));
     return this;
   }
 }

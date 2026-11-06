@@ -2,7 +2,7 @@ import 'package:chat_rooms/core/consts/app_colors.dart';
 import 'package:chat_rooms/core/consts/app_images.dart';
 import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/core/widgets/custom_button.dart';
-import 'package:chat_rooms/features/auth/presentation/widgets/custom_text_fieled.dart';
+import 'package:chat_rooms/features/auth/presentation/view/widgets/custom_text_fieled.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';

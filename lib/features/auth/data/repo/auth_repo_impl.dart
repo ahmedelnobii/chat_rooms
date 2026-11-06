@@ -23,7 +23,7 @@ class AuthRepoImpl implements AuthRepo{
   Future<Either<Failer,void>> signUpWithEmailAndPassword(String email, String password, String name) async {
    try {
       // Call the remote data source to sign up
-      final result = await remoteAuthDataSource.signUpWithEmailAndPassword(email, password, name);
+      await remoteAuthDataSource.signUpWithEmailAndPassword(email, password, name);
       return Right(Unit);
     } catch (e) {
       return Left(Failer(e.toString()));

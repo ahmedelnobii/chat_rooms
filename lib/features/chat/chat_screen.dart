@@ -11,6 +11,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  bool _isLiked = false;
   static const chatBubbleList = [
     ChatBubble(),
     ChatBubble(isFromSender: false),
@@ -65,6 +66,15 @@ class _ChatScreenState extends State<ChatScreen> {
                     title: const Text("Room Chat"),
                     backgroundColor: AppColors.primiary.withValues(alpha: .6),
                     centerTitle: true,
+                    actions: [
+                      IconButton(
+                        icon: Icon(
+                          _isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: _isLiked ? Colors.black : Colors.white,
+                        ),
+                        onPressed: () => setState(() => _isLiked = !_isLiked),
+                      ),
+                    ],
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(20),

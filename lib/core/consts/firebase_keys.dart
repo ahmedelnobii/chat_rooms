@@ -1,5 +1,5 @@
 class FirebaseKeys {
-  //users  
+  //users
   static const String usersCollection = 'users';
   static const String userName = 'name';
   static const String emailField = 'email';

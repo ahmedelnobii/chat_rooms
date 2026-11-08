@@ -39,9 +39,9 @@ class AuthRepoImpl implements AuthRepo {
         password,
         name,
       );
-      return Right(Unit);
+      return const Right(null);
     } catch (e) {
-      return Left(Failer(e.toString()));
+      return Left(Failer(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
@@ -51,7 +51,7 @@ class AuthRepoImpl implements AuthRepo {
       final user = await remoteAuthDataSource.continueWithGoogle();
       return Right(user);
     } catch (e) {
-      return Left(Failer(e.toString()));
+      return Left(Failer(e.toString().replaceAll('Exception: ', '')));
     }
   }
 }

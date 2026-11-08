@@ -6,10 +6,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await GoogleSignIn.instance.initialize();
   Bloc.observer = AppBlocObserver();
   configureDependencies();
   runApp(MyApp());
@@ -24,9 +26,7 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       builder: (context, child) {
         return MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (_) => getIt<AuthCubit>()),
-          ],
+          providers: [BlocProvider(create: (_) => getIt<AuthCubit>())],
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,
             title: 'Chat Rooms',

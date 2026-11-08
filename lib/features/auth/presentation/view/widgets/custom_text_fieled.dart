@@ -11,6 +11,7 @@ class CustomTextFieled extends StatefulWidget {
   final FieldType fieldType;
 
   const CustomTextFieled({
+    super.key,
     required this.fieldType,
     required this.textField,
     required this.textEditingController,

@@ -123,7 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 36.h),
                         BlocConsumer<AuthCubit, AuthStates>(
                           listener: (context, state) {
-                            if (state is LoginSuccessState) {
+                            if (state is LoginSuccessState ||
+                                state is GoogleSignInSuccessState) {
                               if (mounted) {
                                 context.go(AppRouts.homeScreen);
                               }
@@ -134,28 +135,48 @@ class _LoginScreenState extends State<LoginScreen> {
                                 SnackBar(
                                   content: Text(state.error),
                                   backgroundColor: Colors.red,
-                                  dismissDirection: .horizontal,
-                                  duration: Duration(seconds: 3),
+                                  dismissDirection: DismissDirection.horizontal,
+                                  duration: const Duration(seconds: 3),
+                                ),
+                              );
+                            }
+
+                            if (state is GoogleSignInErrorState) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.error),
+                                  backgroundColor: Colors.red,
+                                  dismissDirection: DismissDirection.horizontal,
+                                  duration: const Duration(seconds: 3),
                                 ),
                               );
                             }
                           },
                           builder: (context, state) {
-                            if (state is LoginLoadingState) {
+                            final bool isLoginLoading =
+                                state is LoginLoadingState;
+                            final bool isGoogleLoading =
+                                state is GoogleSignInLoadingState;
+                            final bool isLoading =
+                                isLoginLoading || isGoogleLoading;
+
+                            if (isLoginLoading) {
                               return CustomButton(
                                 onPressed: () {},
                                 text: "loading .....",
                               );
                             }
                             return CustomButton(
-                              onPressed: () async {
-                                if (formKey.currentState!.validate()) {
-                                  await context.read<AuthCubit>().login(
-                                    email: emailController.text,
-                                    password: passwordController.text,
-                                  );
-                                }
-                              },
+                              onPressed: isLoading
+                                  ? () {}
+                                  : () async {
+                                      if (formKey.currentState!.validate()) {
+                                        await context.read<AuthCubit>().login(
+                                          email: emailController.text,
+                                          password: passwordController.text,
+                                        );
+                                      }
+                                    },
                               text: "Sign In",
                             );
                           },
@@ -219,39 +240,66 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         SizedBox(height: 16.h),
-                        Center(
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0x40000000),
-                                  blurRadius: 8,
-                                  offset: Offset(0, 4),
+                        BlocBuilder<AuthCubit, AuthStates>(
+                          builder: (context, state) {
+                            final bool isGoogleLoading =
+                                state is GoogleSignInLoadingState;
+                            final bool isLoginLoading =
+                                state is LoginLoadingState;
+                            final bool isLoading =
+                                isGoogleLoading || isLoginLoading;
+
+                            return Center(
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0x40000000),
+                                      blurRadius: 8,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: IconButton(
-                              onPressed: () {},
-                              tooltip: "Sign in with Google",
-                              style: IconButton.styleFrom(
-                                backgroundColor: AppColors.primiary,
-                                foregroundColor: Colors.white,
-                                fixedSize: Size(48.w, 48.h),
-                                shape: const CircleBorder(),
-                              ),
-                              icon: FittedBox(
-                                child: Text(
-                                  "G",
-                                  style: TextStyle(
-                                    fontSize: 24.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                child: IconButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () {
+                                          context
+                                              .read<AuthCubit>()
+                                              .signInWithGoogle();
+                                        },
+                                  tooltip: "Sign in with Google",
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: AppColors.primiary,
+                                    foregroundColor: Colors.white,
+                                    fixedSize: Size(48.w, 48.h),
+                                    shape: const CircleBorder(),
                                   ),
+                                  icon: isGoogleLoading
+                                      ? SizedBox(
+                                          width: 22.w,
+                                          height: 22.h,
+                                          child:
+                                              const CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 2.5,
+                                              ),
+                                        )
+                                      : FittedBox(
+                                          child: Text(
+                                            "G",
+                                            style: TextStyle(
+                                              fontSize: 24.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       ],
                     ),

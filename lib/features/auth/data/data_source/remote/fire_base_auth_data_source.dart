@@ -9,7 +9,6 @@ import 'package:injectable/injectable.dart';
 @Singleton(as: RemoteAuthDataSource)
 class FireBaseAuthDataSource implements RemoteAuthDataSource {
   final firebaseAuth = FirebaseAuth.instance;
-  final googleSignIn = GoogleSignIn.instance;
 
   @override
   Future<UserModel> signInWithEmailAndPassword(
@@ -59,6 +58,8 @@ class FireBaseAuthDataSource implements RemoteAuthDataSource {
   @override
   Future<UserModel> continueWithGoogle() async {
     try {
+      GoogleSignIn.instance.initialize();
+      final googleSignIn = GoogleSignIn.instance;
       final googleSignInAccount = await googleSignIn.authenticate();
       final googleAuth = googleSignInAccount.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -67,25 +68,32 @@ class FireBaseAuthDataSource implements RemoteAuthDataSource {
       final userCredential = await firebaseAuth.signInWithCredential(
         credential,
       );
-      bool isNew = userCredential.additionalUserInfo?.isNewUser ?? false;
-      if (isNew) {
+      final user = userCredential.user!;
+      final userDocRef = FirebaseFirestore.instance
+          .collection(FirebaseKeys.usersCollection)
+          .doc(user.uid);
+      final userDoc = await userDocRef.get();
+
+      if (!userDoc.exists || userDoc.data() == null) {
         UserModel userModel = UserModel(
-          name: userCredential.user!.displayName ?? "user",
-          email: userCredential.user!.email!,
-          userID: userCredential.user!.uid,
+          name: (user.displayName != null && user.displayName!.isNotEmpty)
+              ? user.displayName!
+              : "User",
+          email: user.email ?? "",
+          userID: user.uid,
         );
-        await FirebaseFirestore.instance
-            .collection(FirebaseKeys.usersCollection)
-            .doc(userCredential.user!.uid)
-            .set(userModel.toJson());
+        await userDocRef.set(userModel.toJson());
         return userModel;
       } else {
-        final userDoc = await FirebaseFirestore.instance
-            .collection(FirebaseKeys.usersCollection)
-            .doc(userCredential.user!.uid)
-            .get();
         return UserModel.fromJson(userDoc.data()!);
       }
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        throw Exception("Sign in was cancelled");
+      }
+      throw Exception(e.description ?? "Google sign in failed");
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message ?? "Authentication failed");
     } catch (e) {
       throw Exception(e.toString());
     }

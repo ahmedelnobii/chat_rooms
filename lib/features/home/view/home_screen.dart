@@ -14,7 +14,6 @@ class HomeScreen extends StatelessWidget {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-       
         backgroundColor: const Color(0xffF6F9FE),
         body: SafeArea(
           bottom: false,

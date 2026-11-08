@@ -24,3 +24,15 @@ class RegisterErrorState extends AuthStates {
   final String error;
   RegisterErrorState(this.error);
 }
+
+class GoogleSignInLoadingState extends AuthStates {}
+
+class GoogleSignInSuccessState extends AuthStates {
+  final UserModel userModel;
+  GoogleSignInSuccessState(this.userModel);
+}
+
+class GoogleSignInErrorState extends AuthStates {
+  final String error;
+  GoogleSignInErrorState(this.error);
+}

@@ -161,7 +161,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             }
                                           }
 
+                                          if (state
+                                              is GoogleSignInSuccessState) {
+                                            if (mounted) {
+                                              context.go(AppRouts.homeScreen);
+                                            }
+                                          }
+
                                           if (state is RegisterErrorState) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(state.error),
+                                                backgroundColor: Colors.red,
+                                                dismissDirection: .horizontal,
+                                                duration: Duration(seconds: 3),
+                                              ),
+                                            );
+                                          }
+
+                                          if (state is GoogleSignInErrorState) {
                                             ScaffoldMessenger.of(
                                               context,
                                             ).showSnackBar(
@@ -175,28 +195,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           }
                                         },
                                         builder: (context, state) {
-                                          if (state is RegisterLoadingState) {
+                                          final bool isRegisterLoading =
+                                              state is RegisterLoadingState;
+                                          final bool isGoogleLoading =
+                                              state is GoogleSignInLoadingState;
+                                          final bool isLoading =
+                                              isRegisterLoading ||
+                                              isGoogleLoading;
+
+                                          if (isRegisterLoading) {
                                             return CustomButton(
                                               onPressed: () {},
                                               text: "loading .....",
                                             );
                                           }
                                           return CustomButton(
-                                            onPressed: () async {
-                                              if (formKey.currentState!
-                                                  .validate()) {
-                                                await context
-                                                    .read<AuthCubit>()
-                                                    .register(
-                                                      name: nameController.text,
-                                                      email:
-                                                          emailController.text,
-                                                      password:
-                                                          passwordController
-                                                              .text,
-                                                    );
-                                              }
-                                            },
+                                            onPressed: isLoading
+                                                ? () {}
+                                                : () async {
+                                                    if (formKey.currentState!
+                                                        .validate()) {
+                                                      await context
+                                                          .read<AuthCubit>()
+                                                          .register(
+                                                            name: nameController
+                                                                .text,
+                                                            email:
+                                                                emailController
+                                                                    .text,
+                                                            password:
+                                                                passwordController
+                                                                    .text,
+                                                          );
+                                                    }
+                                                  },
                                             text: "Sign Up",
                                           );
                                         },
@@ -262,40 +294,70 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ],
                                       ),
                                       SizedBox(height: 16.h),
-                                      Center(
-                                        child: Container(
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0x40000000),
-                                                blurRadius: 8,
-                                                offset: Offset(0, 4),
+                                      BlocBuilder<AuthCubit, AuthStates>(
+                                        builder: (context, state) {
+                                          final bool isGoogleLoading =
+                                              state is GoogleSignInLoadingState;
+                                          final bool isRegisterLoading =
+                                              state is RegisterLoadingState;
+                                          final bool isLoading =
+                                              isGoogleLoading ||
+                                              isRegisterLoading;
+
+                                          return Center(
+                                            child: Container(
+                                              decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0x40000000),
+                                                    blurRadius: 8,
+                                                    offset: Offset(0, 4),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                          child: IconButton(
-                                            onPressed: () {},
-                                            tooltip: "Sign in with Google",
-                                            style: IconButton.styleFrom(
-                                              backgroundColor:
-                                                  AppColors.primiary,
-                                              foregroundColor: Colors.white,
-                                              fixedSize: Size(48.w, 48.h),
-                                              shape: const CircleBorder(),
-                                            ),
-                                            icon: FittedBox(
-                                              child: Text(
-                                                "G",
-                                                style: TextStyle(
-                                                  fontSize: 24.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
+                                              child: IconButton(
+                                                onPressed: isLoading
+                                                    ? null
+                                                    : () {
+                                                        context
+                                                            .read<AuthCubit>()
+                                                            .signInWithGoogle();
+                                                      },
+                                                tooltip: "Sign in with Google",
+                                                style: IconButton.styleFrom(
+                                                  backgroundColor:
+                                                      AppColors.primiary,
+                                                  foregroundColor: Colors.white,
+                                                  fixedSize: Size(48.w, 48.h),
+                                                  shape: const CircleBorder(),
                                                 ),
+                                                icon: isGoogleLoading
+                                                    ? SizedBox(
+                                                        width: 22.w,
+                                                        height: 22.h,
+                                                        child:
+                                                            const CircularProgressIndicator(
+                                                              color:
+                                                                  Colors.white,
+                                                              strokeWidth: 2.5,
+                                                            ),
+                                                      )
+                                                    : FittedBox(
+                                                        child: Text(
+                                                          "G",
+                                                          style: TextStyle(
+                                                            fontSize: 24.sp,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
                                               ),
                                             ),
-                                          ),
-                                        ),
+                                          );
+                                        },
                                       ),
                                     ],
                                   ),

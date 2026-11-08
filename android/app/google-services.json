@@ -12,7 +12,20 @@
           "package_name": "com.example.chat_rooms"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "239263368000-hddhm6memn168vdk8ksded72hv79sele.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chat_rooms",
+            "certificate_hash": "c70e845b826c1943bee9103eaf130e720aa8968c"
+          }
+        },
+        {
+          "client_id": "239263368000-g490dv3riov5rta49aalqethpmibe20j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCPuwTeBrj5CgXPhTnlW7FrHX1LPre9ShA"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239263368000-g490dv3riov5rta49aalqethpmibe20j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

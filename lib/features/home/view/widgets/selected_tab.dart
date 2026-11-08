@@ -38,7 +38,7 @@ class SelectedTab extends StatelessWidget {
               crossAxisSpacing: 10.w,
               mainAxisSpacing: 10.w,
               crossAxisCount: 2,
-              childAspectRatio: 186.w  / 286.h,
+              childAspectRatio: 186.w / 286.h,
             ),
             itemBuilder: (_, _) => CustomRoomIcon(),
           ),

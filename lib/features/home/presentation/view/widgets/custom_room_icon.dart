@@ -4,6 +4,7 @@ import 'package:chat_rooms/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomRoomIcon extends StatelessWidget {
   const CustomRoomIcon({super.key});
@@ -26,18 +27,37 @@ class CustomRoomIcon extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(16.r),
         child: Column(
+          mainAxisSize: .min,
           crossAxisAlignment: .stretch,
           children: [
-            Image.asset(AppImages.chatIcon, fit: .cover),
+            Image.asset(
+              AppImages.chatIcon,
+              fit: .contain,
+              height: 65.h,
+              width: 65.w,
+            ),
             SizedBox(height: 10.h),
             Text(
               "Room Name",
               style: TextStyle(
+                fontFamily: GoogleFonts.archivo().fontFamily,
                 color: Colors.black,
                 fontSize: 15.sp,
                 fontWeight: .bold,
               ),
             ),
+            Text(
+              "room description  room descriptionroom descriptionroom descriptionroom descriptionroom description      ",
+              style: TextStyle(
+                fontFamily: GoogleFonts.archivo().fontFamily,
+                color: Colors.grey,
+                fontSize: 12.sp,
+                fontWeight: .bold,
+              ),
+              maxLines: 2,
+              overflow: .ellipsis,
+            ),
+
             Spacer(),
             CustomButton(
               text: "Join",

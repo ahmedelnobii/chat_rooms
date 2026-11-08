@@ -21,10 +21,10 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       floatingActionButton: currentIndex == 0
           ? FloatingActionButton(
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
               backgroundColor: AppColors.primiary,
               onPressed: () {
-                // Handle FAB action for "My Rooms" tab
+                context.push(AppRouts.createRoomScreen);
               },
               child: const Icon(Icons.add, color: Colors.white),
             )

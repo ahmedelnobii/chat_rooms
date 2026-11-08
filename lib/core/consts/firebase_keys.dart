@@ -9,6 +9,7 @@ class FirebaseKeys {
   //rooms
   static const String allRoomsCollection = 'allRooms';
   static const String roomNameField = 'roomName';
+  static const String roomDescriptionField = 'roomDescription';
   static const String roomIDField = 'roomID';
   static const String roomCreatorNameField = 'roomCreatorName';
   static const String roomCreatorIDField = 'roomCreatorID';

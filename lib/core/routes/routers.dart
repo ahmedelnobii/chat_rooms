@@ -2,6 +2,7 @@ import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/auth/presentation/view/login_screen.dart';
 import 'package:chat_rooms/features/auth/presentation/view/register_screen.dart';
 import 'package:chat_rooms/features/chat/chat_screen.dart';
+import 'package:chat_rooms/features/create_room/presentation/view/create_room_screen.dart';
 import 'package:chat_rooms/features/home/presentation/view/home_screen.dart';
 import 'package:chat_rooms/features/liked/liked_screen.dart';
 import 'package:chat_rooms/features/main/main_screen.dart';
@@ -59,6 +60,32 @@ final routers = GoRouter(
                 begin: const Offset(1, 0),
                 end: Offset.zero,
               ).animate(animation),
+              child: child,
+            );
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRouts.createRoomScreen,
+      pageBuilder: (context, state) {
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: const CreateRoomScreen(),
+          transitionDuration: const Duration(milliseconds: 300),
+          reverseTransitionDuration: const Duration(milliseconds: 300),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0, 1),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ),
               child: child,
             );
           },

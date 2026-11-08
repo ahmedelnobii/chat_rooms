@@ -63,16 +63,16 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16.h),
-                  CustomButton(
-                    backgroundColor: Colors.grey.shade200,
-                    forgroundColor: AppColors.primiary,
-                    weight: FontWeight.w500,
-                    fontsize: 14.sp,
-                    onPressed: () {
-                      // Handle edit profile action
-                    },
-                    text: "edit profile",
-                  ),
+                  // CustomButton(
+                  //   backgroundColor: Colors.grey.shade200,
+                  //   forgroundColor: AppColors.primiary,
+                  //   weight: FontWeight.w500,
+                  //   fontsize: 14.sp,
+                  //   onPressed: () {
+                  //     // Handle edit profile action
+                  //   },
+                  //   text: "edit profile",
+                  // ),
                 ],
               ),
             ),

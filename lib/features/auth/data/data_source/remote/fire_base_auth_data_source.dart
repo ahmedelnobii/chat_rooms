@@ -58,7 +58,6 @@ class FireBaseAuthDataSource implements RemoteAuthDataSource {
   @override
   Future<UserModel> continueWithGoogle() async {
     try {
-      GoogleSignIn.instance.initialize();
       final googleSignIn = GoogleSignIn.instance;
       final googleSignInAccount = await googleSignIn.authenticate();
       final googleAuth = googleSignInAccount.authentication;

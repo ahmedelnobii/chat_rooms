@@ -1,6 +1,6 @@
 import 'package:chat_rooms/core/consts/app_colors.dart';
-import 'package:chat_rooms/features/home/view/widgets/custom_app_bar_item.dart';
-import 'package:chat_rooms/features/home/view/widgets/selected_tab.dart';
+import 'package:chat_rooms/features/home/presentation/view/widgets/custom_app_bar_item.dart';
+import 'package:chat_rooms/features/home/presentation/view/widgets/selected_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const tabs = ['My Rooms', 'All Rooms'];
+    const tabs = ['All Rooms', 'My Rooms'];
 
     return DefaultTabController(
       length: tabs.length,

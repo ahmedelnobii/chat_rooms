@@ -2,7 +2,7 @@ import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/auth/presentation/view/login_screen.dart';
 import 'package:chat_rooms/features/auth/presentation/view/register_screen.dart';
 import 'package:chat_rooms/features/chat/chat_screen.dart';
-import 'package:chat_rooms/features/home/view/home_screen.dart';
+import 'package:chat_rooms/features/home/presentation/view/home_screen.dart';
 import 'package:chat_rooms/features/liked/liked_screen.dart';
 import 'package:chat_rooms/features/main/main_screen.dart';
 import 'package:chat_rooms/features/profile/profile_screen.dart';

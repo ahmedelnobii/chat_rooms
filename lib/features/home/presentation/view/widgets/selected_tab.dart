@@ -1,4 +1,4 @@
-import 'package:chat_rooms/features/home/view/widgets/custom_room_icon.dart';
+import 'package:chat_rooms/features/home/presentation/view/widgets/custom_room_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

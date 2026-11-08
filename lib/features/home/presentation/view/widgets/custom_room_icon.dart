@@ -7,7 +7,15 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomRoomIcon extends StatelessWidget {
-  const CustomRoomIcon({super.key});
+  final String roomName;
+  final String roomDescription;
+
+  const CustomRoomIcon({
+    super.key,
+    this.roomName = "Room Name",
+    this.roomDescription =
+        "room description  room descriptionroom descriptionroom descriptionroom descriptionroom description      ",
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,45 +35,74 @@ class CustomRoomIcon extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(16.r),
         child: Column(
-          mainAxisSize: .min,
-          crossAxisAlignment: .stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.asset(
-              AppImages.chatIcon,
-              fit: .contain,
-              height: 65.h,
-              width: 65.w,
-            ),
-            SizedBox(height: 10.h),
-            Text(
-              "Room Name",
-              style: TextStyle(
-                fontFamily: GoogleFonts.archivo().fontFamily,
-                color: Colors.black,
-                fontSize: 15.sp,
-                fontWeight: .bold,
+            Expanded(
+              flex: 3,
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Image.asset(AppImages.chatIcon),
+                ),
               ),
             ),
-            Text(
-              "room description  room descriptionroom descriptionroom descriptionroom descriptionroom description      ",
-              style: TextStyle(
-                fontFamily: GoogleFonts.archivo().fontFamily,
-                color: Colors.grey,
-                fontSize: 12.sp,
-                fontWeight: .bold,
-              ),
-              maxLines: 2,
-              overflow: .ellipsis,
-            ),
+            SizedBox(height: 8.h),
+            Expanded(
+              flex: 2,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    roomName,
+                    style: TextStyle(
+                      fontFamily: GoogleFonts.archivo().fontFamily,
+                      color: Colors.black,
 
-            Spacer(),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Expanded(
+              flex: 2,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SizedBox(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.topLeft,
+                      child: SizedBox(
+                        width: constraints.maxWidth,
+                        child: Text(
+                          roomDescription,
+                          style: TextStyle(
+                            fontFamily: GoogleFonts.archivo().fontFamily,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 5.h),
             CustomButton(
               text: "Join",
               onPressed: () {
                 context.push(AppRouts.chatScreen);
               },
               fontsize: 16,
-              weight: .w400,
+              weight: FontWeight.w400,
               padding: 4,
             ),
           ],

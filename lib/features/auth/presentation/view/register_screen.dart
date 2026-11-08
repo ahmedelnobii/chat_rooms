@@ -1,8 +1,11 @@
 import 'package:chat_rooms/core/consts/app_colors.dart';
 import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/core/widgets/custom_button.dart';
+import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:chat_rooms/features/auth/presentation/cubit/auth_states.dart';
 import 'package:chat_rooms/features/auth/presentation/view/widgets/custom_text_fieled.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -136,14 +139,67 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
 
                                       SizedBox(height: 36.h),
-                                      CustomButton(
-                                        onPressed: () {
-                                          if (formKey.currentState!
-                                              .validate()) {
-                                            // Perform registration logic here
+                                      BlocConsumer<AuthCubit, AuthStates>(
+                                        listener: (context, state) {
+                                          if (state is RegisterSuccessState) {
+                                            if (mounted) {
+                                              context.go(AppRouts.loginScreen);
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    "Successfully registered , please log in",
+                                                  ),
+                                                  backgroundColor: Colors.green,
+                                                  dismissDirection: .horizontal,
+                                                  duration: Duration(
+                                                    seconds: 3,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          }
+
+                                          if (state is RegisterErrorState) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(state.error),
+                                                backgroundColor: Colors.red,
+                                                dismissDirection: .horizontal,
+                                                duration: Duration(seconds: 3),
+                                              ),
+                                            );
                                           }
                                         },
-                                        text: "Sign Up",
+                                        builder: (context, state) {
+                                          if (state is RegisterLoadingState) {
+                                            return CustomButton(
+                                              onPressed: () {},
+                                              text: "loading .....",
+                                            );
+                                          }
+                                          return CustomButton(
+                                            onPressed: () async {
+                                              if (formKey.currentState!
+                                                  .validate()) {
+                                                await context
+                                                    .read<AuthCubit>()
+                                                    .register(
+                                                      name: nameController.text,
+                                                      email:
+                                                          emailController.text,
+                                                      password:
+                                                          passwordController
+                                                              .text,
+                                                    );
+                                              }
+                                            },
+                                            text: "Sign Up",
+                                          );
+                                        },
                                       ),
                                       SizedBox(height: 16.h),
                                       Row(

@@ -2,7 +2,7 @@ import 'package:chat_rooms/core/consts/firebase_keys.dart';
 
 class RoomModel {
   String roomName;
-  String roomID;
+  String? roomID;
   String creatorId;
   String creatorName;
   String description;
@@ -10,7 +10,7 @@ class RoomModel {
   RoomModel({
     required this.creatorId,
     required this.creatorName,
-    required this.roomID,
+    this.roomID,
     required this.roomName,
     required this.description,
   });

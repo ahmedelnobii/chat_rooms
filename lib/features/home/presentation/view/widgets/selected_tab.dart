@@ -37,8 +37,8 @@ class SelectedTab extends StatelessWidget {
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisSpacing: 10.w,
               mainAxisSpacing: 10.w,
-              crossAxisCount: 2,
-              childAspectRatio: 186.w / 250.h,
+              crossAxisCount: MediaQuery.sizeOf(context).width > 650 ? 4 : 2,
+              childAspectRatio: 186 / 250,
             ),
             itemBuilder: (_, _) => CustomRoomIcon(),
           ),

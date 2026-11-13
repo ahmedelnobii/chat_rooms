@@ -74,6 +74,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         onPressed: () => setState(() => _isLiked = !_isLiked),
                       ),
+                      IconButton(
+                        icon: const Icon(Icons.share, color: Colors.white),
+                        onPressed: () {},
+                      ),
                     ],
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
@@ -118,20 +122,35 @@ class _ChatInputBar extends StatelessWidget {
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: Padding(
         padding: EdgeInsets.all(8.w),
-        child: TextField(
-          decoration: InputDecoration(
-            hintText: "Type a message",
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 12.h,
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Type a message",
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
+              ),
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none,
+            SizedBox(width: 8.w),
+            CircleAvatar(
+              backgroundColor: AppColors.primiary,
+              radius: 22.r,
+              child: IconButton(
+                icon: const Icon(Icons.send, color: Colors.white),
+                onPressed: () {},
+              ),
             ),
-            filled: true,
-            fillColor: Colors.grey[200],
-          ),
+          ],
         ),
       ),
     );

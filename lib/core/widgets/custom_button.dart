@@ -15,7 +15,7 @@ class CustomButton extends StatelessWidget {
   });
 
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double fontsize;
   final FontWeight weight;
   final double padding;
@@ -35,7 +35,7 @@ class CustomButton extends StatelessWidget {
         padding: EdgeInsets.all(padding.r),
         child: Text(
           text,
-          style: TextStyle(fontSize: fontsize.sp, fontWeight: weight),
+          style: TextStyle(fontSize: fontsize, fontWeight: weight),
         ),
       ),
     );

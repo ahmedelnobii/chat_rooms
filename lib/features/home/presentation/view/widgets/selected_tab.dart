@@ -1,6 +1,7 @@
 import 'package:chat_rooms/features/home/presentation/cubit/home_cubit.dart';
 import 'package:chat_rooms/features/home/presentation/cubit/home_state.dart';
 import 'package:chat_rooms/features/home/presentation/view/widgets/custom_room_icon.dart';
+import 'package:chat_rooms/features/home/presentation/view/widgets/room_card_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,9 +43,20 @@ class SelectedTab extends StatelessWidget {
               ),
             ),
             if (isLoading)
-              const SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(child: CircularProgressIndicator()),
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                sliver: SliverGrid.builder(
+                  itemCount: 6,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisSpacing: 10.w,
+                    mainAxisSpacing: 10.w,
+                    crossAxisCount: MediaQuery.sizeOf(context).width > 650
+                        ? 4
+                        : 2,
+                    childAspectRatio: 186 / 250,
+                  ),
+                  itemBuilder: (_, _) => const RoomCardShimmer(),
+                ),
               )
             else if (error != null)
               SliverFillRemaining(

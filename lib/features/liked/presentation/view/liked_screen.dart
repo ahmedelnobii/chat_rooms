@@ -3,6 +3,7 @@ import 'package:chat_rooms/core/di/get_it.dart';
 import 'package:chat_rooms/features/liked/presentation/cubit/liked_cubit.dart';
 import 'package:chat_rooms/features/liked/presentation/cubit/liked_state.dart';
 import 'package:chat_rooms/features/liked/presentation/view/widgets/liked_room_widget.dart';
+import 'package:chat_rooms/features/liked/presentation/view/widgets/liked_room_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,8 +59,9 @@ class LikedScreen extends StatelessWidget {
 
   Widget _buildRoomList(BuildContext context, LikedState state) {
     if (state.isLoading && state.rooms.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primiary),
+      return ListView.builder(
+        itemCount: 3,
+        itemBuilder: (context, index) => const LikedRoomShimmer(),
       );
     }
 

@@ -6,7 +6,7 @@ import 'package:chat_rooms/features/create_room/presentation/view/create_room_sc
 import 'package:chat_rooms/features/home/presentation/view/home_screen.dart';
 import 'package:chat_rooms/features/liked/presentation/view/liked_screen.dart';
 import 'package:chat_rooms/features/main/main_screen.dart';
-import 'package:chat_rooms/features/profile/profile_screen.dart';
+import 'package:chat_rooms/features/profile/presentation/view/profile_screen.dart';
 import 'package:chat_rooms/features/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

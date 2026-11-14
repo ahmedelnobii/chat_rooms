@@ -7,4 +7,5 @@ class AppRouts {
   static const String chatScreen = '/chatScreen';
   static const String profileScreen = '/profileScreen';
   static const String createRoomScreen = '/createRoomScreen';
+  static const String roomInviteScreen = '/room';
 }

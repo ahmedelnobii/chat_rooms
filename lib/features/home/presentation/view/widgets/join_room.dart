@@ -6,14 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-Future<void> joinRoom(
+Future<bool> joinRoom(
   BuildContext context, {
   required String roomID,
   required bool isPrivate,
+  bool replaceCurrentRoute = false,
 }) async {
   if (!isPrivate) {
-    await context.push("${AppRouts.chatScreen}/$roomID");
-    return;
+    final path = "${AppRouts.chatScreen}/$roomID";
+    if (replaceCurrentRoute) {
+      context.go(path);
+    } else {
+      await context.push(path);
+    }
+    return true;
   }
 
   final passwordAccepted = await showDialog<bool>(
@@ -26,6 +32,14 @@ Future<void> joinRoom(
   );
 
   if (passwordAccepted == true && context.mounted) {
-    await context.push("${AppRouts.chatScreen}/$roomID");
+    final path = "${AppRouts.chatScreen}/$roomID";
+    if (replaceCurrentRoute) {
+      context.go(path);
+    } else {
+      await context.push(path);
+    }
+    return true;
   }
+
+  return false;
 }

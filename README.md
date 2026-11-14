@@ -19,3 +19,25 @@ firebase deploy --project <firebase-project-id> --only functions,firestore:rules
 ```
 
 The Flutter app requires a signed-in Firebase user to use rooms.
+
+## Sharing rooms
+
+The chat screen shares a room link in the form
+`https://<firebase-project-id>.web.app/room/<room-id>`. GoRouter resolves the
+room before joining; private rooms still require their password. Firebase
+Hosting rewrites room URLs to the Flutter web entry point so browser navigation
+keeps the same route.
+
+Build the web app before deploying Hosting:
+
+```sh
+flutter build web
+firebase deploy --project <firebase-project-id> --only hosting
+```
+
+The default Hosting domain must be enabled for the Firebase project. To use
+the browser fallback, register a Firebase web app and wire the generated
+`DefaultFirebaseOptions.currentPlatform` into `Firebase.initializeApp` in
+`main.dart` before building. Opening shared links directly in the installed
+native app also requires Android App Links and iOS Universal Links to be
+associated with the Hosting domain and the app's signing/team IDs.

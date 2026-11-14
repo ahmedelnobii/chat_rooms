@@ -1,5 +1,7 @@
 import 'package:chat_rooms/core/consts/app_colors.dart';
 import 'package:chat_rooms/core/di/get_it.dart';
+import 'package:chat_rooms/core/models/room_model.dart';
+import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_state.dart';
@@ -7,9 +9,12 @@ import 'package:chat_rooms/features/chat/data/models/message_model.dart';
 import 'package:chat_rooms/features/chat/presentation/view/widgets/chat_bubble.dart';
 import 'package:chat_rooms/features/liked/presentation/cubit/liked_cubit.dart';
 import 'package:chat_rooms/features/liked/presentation/cubit/liked_state.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -39,6 +44,36 @@ class _ChatScreenState extends State<ChatScreen> {
   //   ChatBubble(),
   //   ChatBubble(isFromSender: false),
   // ];
+
+  Future<void> _shareRoom(BuildContext context, RoomModel room) async {
+    final roomID = room.roomID;
+    final projectId = Firebase.app().options.projectId;
+    if (roomID == null || roomID.isEmpty || projectId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unable to create a room link.')),
+      );
+      return;
+    }
+
+    final roomUri = Uri.https(
+      '$projectId.web.app',
+      '${AppRouts.roomInviteScreen}/$roomID',
+    );
+
+    try {
+      await SharePlus.instance.share(
+        ShareParams(
+          uri: roomUri,
+          subject: 'Join ${room.roomName} on Chat Rooms',
+        ),
+      );
+    } on PlatformException catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unable to share this room: ${error.message}')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,12 +238,20 @@ class _ChatScreenState extends State<ChatScreen> {
                                   );
                                 },
                               ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.share,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {},
+                              BlocBuilder<ChatCubit, ChatState>(
+                                builder: (context, _) {
+                                  final room = context.read<ChatCubit>().room;
+                                  return IconButton(
+                                    tooltip: 'Share room',
+                                    icon: const Icon(
+                                      Icons.share,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: room == null
+                                        ? null
+                                        : () => _shareRoom(context, room),
+                                  );
+                                },
                               ),
                             ],
                             shape: const RoundedRectangleBorder(

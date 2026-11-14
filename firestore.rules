@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isRoomMember(roomID) {
+      return exists(
+        /databases/$(database)/documents/roomMembers/$(roomID)/members/$(request.auth.uid)
+      );
+    }
+
+    function canAccessRoom(roomID) {
+      let roomPath = /databases/$(database)/documents/allRooms/$(roomID);
+      return signedIn()
+        && exists(roomPath)
+        && (
+          get(roomPath).data.get('isPrivate', false) == false
+          || isRoomMember(roomID)
+        );
+    }
+
+    function validPublicRoomCreate(roomID) {
+      return request.resource.data.keys().hasOnly([
+          'roomID',
+          'roomName',
+          'roomDescription',
+          'roomCreatorName',
+          'roomCreatorID',
+          'isPrivate'
+        ])
+        && request.resource.data.roomID == roomID
+        && request.resource.data.roomCreatorID == request.auth.uid
+        && request.resource.data.isPrivate == false;
+    }
+
+    match /users/{userID} {
+      allow read, write: if signedIn() && request.auth.uid == userID;
+
+      match /userLikes/{roomID} {
+        allow read, delete: if signedIn() && request.auth.uid == userID;
+        allow create, update: if signedIn()
+          && request.auth.uid == userID
+          && request.resource.data.roomID == roomID
+          && !request.resource.data.keys().hasAny(['password']);
+      }
+    }
+
+    match /allRooms/{roomID} {
+      allow read: if signedIn();
+      allow create: if signedIn() && validPublicRoomCreate(roomID);
+      allow update, delete: if false;
+
+      match /roomChat/{messageID} {
+        allow read: if canAccessRoom(roomID);
+        allow create: if canAccessRoom(roomID)
+          && request.resource.data.roomID == roomID
+          && request.resource.data.messageSenderID == request.auth.uid;
+        allow update, delete: if false;
+      }
+    }
+
+    match /roomSecrets/{roomID} {
+      allow read, write: if false;
+    }
+
+    match /roomMembers/{roomID}/members/{userID} {
+      allow read: if signedIn() && request.auth.uid == userID;
+      allow write: if false;
+    }
+  }
+}

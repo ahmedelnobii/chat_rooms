@@ -1,4 +1,5 @@
 import 'package:chat_rooms/core/consts/firebase_keys.dart';
+import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/features/chat/data/chat_data_source/remote/chat_remote_data_source.dart';
 import 'package:chat_rooms/features/chat/data/models/message_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,21 @@ import 'package:injectable/injectable.dart';
 @Singleton(as: ChatRemoteDataSource)
 class ChatFireStoreDataSource implements ChatRemoteDataSource {
   final fireStore = FirebaseFirestore.instance;
+
+  @override
+  Future<RoomModel> getRoom(String roomID) async {
+    final snapshot = await fireStore
+        .collection(FirebaseKeys.allRoomsCollection)
+        .doc(roomID)
+        .get();
+    final data = snapshot.data();
+    if (!snapshot.exists || data == null) {
+      throw StateError('Room "$roomID" was not found.');
+    }
+
+    return RoomModel.fromJson({...data, FirebaseKeys.roomIDField: snapshot.id});
+  }
+
   @override
   Stream<List<MessageModel>> getMessages(String roomID) {
     final messageRef = fireStore
@@ -15,14 +31,15 @@ class ChatFireStoreDataSource implements ChatRemoteDataSource {
         .collection(FirebaseKeys.roomChatSubCollection)
         .orderBy(FirebaseKeys.messageTimestampField);
 
-    final List<MessageModel> messages = [];
-    return messageRef.snapshots().map((snapshots) {
-      for (final change in snapshots.docChanges) {
-        if (change.type == .added) {
-          messages.add(MessageModel.fromJson(change.doc.data() ?? {}));
-        }
-      }
-      return messages;
+    return messageRef.snapshots(includeMetadataChanges: true).map((snapshot) {
+      return snapshot.docs
+          .map(
+            (doc) => MessageModel.fromJson(
+              doc.data(),
+              isPending: doc.metadata.hasPendingWrites,
+            ),
+          )
+          .toList();
     });
   }
 

@@ -1,20 +1,21 @@
 import 'package:chat_rooms/core/consts/app_images.dart';
-import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/core/widgets/custom_button.dart';
+import 'package:chat_rooms/features/home/presentation/view/widgets/join_room.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomRoomIcon extends StatelessWidget {
   final String roomName;
   final String roomDescription;
-  final String roomID = "0";
+  final String roomID;
+  final bool isPrivate;
   const CustomRoomIcon({
     super.key,
-    this.roomName = "Room Name",
-    this.roomDescription =
-        "room description  room descriptionroom descriptionroom descriptionroom descriptionroom description      ",
+    required this.roomID,
+    required this.roomName,
+    required this.roomDescription,
+    required this.isPrivate,
   });
 
   @override
@@ -51,18 +52,23 @@ class CustomRoomIcon extends StatelessWidget {
               flex: 2,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    roomName,
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.archivo().fontFamily,
-                      color: Colors.black,
-
-                      fontWeight: FontWeight.bold,
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        roomName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.archivo().fontFamily,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
+                    if (isPrivate)
+                      Icon(Icons.lock_outline, size: 16.r, color: Colors.grey),
+                  ],
                 ),
               ),
             ),
@@ -98,9 +104,8 @@ class CustomRoomIcon extends StatelessWidget {
             SizedBox(height: 5.h),
             CustomButton(
               text: "Join",
-              onPressed: () {
-                context.push("${AppRouts.chatScreen}/$roomID");
-              },
+              onPressed: () =>
+                  joinRoom(context, roomID: roomID, isPrivate: isPrivate),
               fontsize: 16,
               weight: FontWeight.w400,
               padding: 4,

@@ -37,6 +37,26 @@ import 'package:chat_rooms/features/create_room/data/repo/create_room_repo_impl.
     as _i198;
 import 'package:chat_rooms/features/create_room/presentation/cubit/create_room_cubit.dart'
     as _i623;
+import 'package:chat_rooms/features/home/data/home_data_source/remote/home_fireStore_data_source.dart'
+    as _i213;
+import 'package:chat_rooms/features/home/data/home_data_source/remote/home_remote_data_source.dart'
+    as _i430;
+import 'package:chat_rooms/features/home/data/repo/home_repo.dart' as _i66;
+import 'package:chat_rooms/features/home/data/repo/home_repo_impl.dart'
+    as _i1057;
+import 'package:chat_rooms/features/home/presentation/cubit/home_cubit.dart'
+    as _i694;
+import 'package:chat_rooms/features/home/presentation/cubit/room_password_cubit.dart'
+    as _i799;
+import 'package:chat_rooms/features/liked/data/liked_data_source/remote/liked_firestore_data_source.dart'
+    as _i328;
+import 'package:chat_rooms/features/liked/data/liked_data_source/remote/liked_remote_data_source.dart'
+    as _i207;
+import 'package:chat_rooms/features/liked/data/repo/liked_repo.dart' as _i954;
+import 'package:chat_rooms/features/liked/data/repo/liked_repo_impl.dart'
+    as _i585;
+import 'package:chat_rooms/features/liked/presentation/cubit/liked_cubit.dart'
+    as _i977;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -50,11 +70,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i104.CreateRoomRemoteDataSource>(
       () => _i132.CreateRoomFireBaseDataSource(),
     );
+    gh.singleton<_i430.HomeRemoteDataSource>(
+      () => _i213.HomeFirestoreDataSource(),
+    );
+    gh.singleton<_i66.HomeRepo>(
+      () => _i1057.HomeRepoImpl(gh<_i430.HomeRemoteDataSource>()),
+    );
     gh.singleton<_i74.RemoteAuthDataSource>(
       () => _i1024.FireBaseAuthDataSource(),
     );
     gh.singleton<_i700.ChatRemoteDataSource>(
       () => _i703.ChatFireStoreDataSource(),
+    );
+    gh.singleton<_i207.LikedRemoteDataSource>(
+      () => _i328.LikedFirestoreDataSource(),
     );
     gh.singleton<_i53.CreateRoomRepo>(
       () => _i198.CreateRoomRepoImpl(gh<_i104.CreateRoomRemoteDataSource>()),
@@ -65,12 +94,20 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.singleton<_i124.AuthCubit>(() => _i124.AuthCubit(gh<_i19.AuthRepo>()));
+    gh.singleton<_i954.LikedRepo>(
+      () => _i585.LikedRepoImpl(gh<_i207.LikedRemoteDataSource>()),
+    );
     gh.factory<_i623.CreateRoomCubit>(
       () => _i623.CreateRoomCubit(gh<_i53.CreateRoomRepo>()),
     );
     gh.singleton<_i149.ChatRepo>(
       () => _i12.ChatRepoImpl(gh<_i700.ChatRemoteDataSource>()),
     );
+    gh.factory<_i694.HomeCubit>(() => _i694.HomeCubit(gh<_i66.HomeRepo>()));
+    gh.factory<_i799.RoomPasswordCubit>(
+      () => _i799.RoomPasswordCubit(gh<_i66.HomeRepo>()),
+    );
+    gh.factory<_i977.LikedCubit>(() => _i977.LikedCubit(gh<_i954.LikedRepo>()));
     gh.factory<_i137.ChatCubit>(() => _i137.ChatCubit(gh<_i149.ChatRepo>()));
     return this;
   }

@@ -35,11 +35,30 @@ class ChatBubble extends StatelessWidget {
                 color: isFromSender ? Colors.blue : Colors.grey[300],
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Text(
-                messageModel.content,
-                style: TextStyle(
-                  color: isFromSender ? Colors.white : Colors.black,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Flexible(
+                    child: Text(
+                      messageModel.content,
+                      style: TextStyle(
+                        color: isFromSender ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
+                  if (isFromSender) ...[
+                    SizedBox(width: 6.w),
+                    Tooltip(
+                      message: messageModel.isPending ? 'Sending' : 'Sent',
+                      child: Icon(
+                        messageModel.isPending ? Icons.schedule : Icons.done,
+                        size: 14.sp,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           ],

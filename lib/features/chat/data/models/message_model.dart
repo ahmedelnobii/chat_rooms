@@ -7,6 +7,7 @@ class MessageModel {
   String? messageID;
   String senderID;
   DateTime createdAt;
+  bool isPending;
 
   MessageModel({
     required this.content,
@@ -15,14 +16,19 @@ class MessageModel {
     this.messageID,
     required this.senderID,
     required this.createdAt,
+    this.isPending = false,
   });
 
-  factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
+  factory MessageModel.fromJson(
+    Map<String, dynamic> json, {
+    bool isPending = false,
+  }) => MessageModel(
     content: json[FirebaseKeys.messageTextField] as String,
     senderName: json[FirebaseKeys.messageSenderNameField] as String,
     roomID: json[FirebaseKeys.roomIDField] as String,
     messageID: json[FirebaseKeys.messageIDField] as String?,
     senderID: json[FirebaseKeys.messageSenderIDField] as String,
+    isPending: isPending,
     createdAt: DateTime.parse(
       json[FirebaseKeys.messageTimestampField] as String,
     ),

@@ -11,6 +11,7 @@ class CreateRoomTextField extends StatelessWidget {
   final int maxLines;
   final int minLines;
   final TextInputAction textInputAction;
+  final bool obscureText;
 
   const CreateRoomTextField({
     super.key,
@@ -22,6 +23,7 @@ class CreateRoomTextField extends StatelessWidget {
     this.maxLines = 1,
     this.minLines = 1,
     this.textInputAction = TextInputAction.next,
+    this.obscureText = false,
   });
 
   @override
@@ -44,6 +46,9 @@ class CreateRoomTextField extends StatelessWidget {
           maxLines: maxLines,
           minLines: minLines,
           textInputAction: textInputAction,
+          obscureText: obscureText,
+          autocorrect: !obscureText,
+          enableSuggestions: !obscureText,
           style: TextStyle(fontSize: 14.sp, color: Colors.black87),
           decoration: InputDecoration(
             prefixIcon: Padding(
@@ -51,21 +56,14 @@ class CreateRoomTextField extends StatelessWidget {
                 horizontal: 14.w,
                 vertical: maxLines > 1 ? 14.h : 0,
               ),
-              child: Icon(
-                prefixIcon,
-                color: AppColors.primiary,
-                size: 22.r,
-              ),
+              child: Icon(prefixIcon, color: AppColors.primiary, size: 22.r),
             ),
             prefixIconConstraints: BoxConstraints(
               minWidth: 44.w,
               minHeight: 44.h,
             ),
             hintText: hint,
-            hintStyle: TextStyle(
-              color: Colors.grey.shade400,
-              fontSize: 14.sp,
-            ),
+            hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14.sp),
             filled: true,
             fillColor: AppColors.textFieldColor,
             border: OutlineInputBorder(

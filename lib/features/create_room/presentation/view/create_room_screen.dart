@@ -24,11 +24,15 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isPrivate = false;
   bool isValid = false;
+
   @override
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -45,6 +49,8 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
           creatorName: user.name,
           roomName: roomName,
           description: roomDescription,
+          isPrivate: _isPrivate,
+          password: _isPrivate ? _passwordController.text : null,
         ),
       );
       // Form is validated - ready for cubit / backend integration
@@ -211,6 +217,51 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                                 return null;
                               },
                             ),
+
+                            SizedBox(height: 12.h),
+                            SwitchListTile.adaptive(
+                              contentPadding: EdgeInsets.zero,
+                              title: const Text('Private room'),
+                              subtitle: const Text(
+                                'Require a password to join this room',
+                              ),
+                              value: _isPrivate,
+                              activeThumbColor: AppColors.primiary,
+                              onChanged: (value) {
+                                setState(() {
+                                  _isPrivate = value;
+                                  isValid = false;
+                                });
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
+                                  if (!mounted) return;
+                                  setState(() {
+                                    isValid =
+                                        _formKey.currentState?.validate() ??
+                                        false;
+                                  });
+                                });
+                              },
+                            ),
+                            if (_isPrivate) ...[
+                              SizedBox(height: 12.h),
+                              CreateRoomTextField(
+                                label: "Room Password",
+                                hint: "Enter a password",
+                                prefixIcon: Icons.lock_outline,
+                                controller: _passwordController,
+                                obscureText: true,
+                                textInputAction: TextInputAction.done,
+                                validator: (value) {
+                                  if (_isPrivate &&
+                                      (value == null || value.trim().isEmpty)) {
+                                    return "Please enter a room password";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
 
                             SizedBox(height: 28.h),
 

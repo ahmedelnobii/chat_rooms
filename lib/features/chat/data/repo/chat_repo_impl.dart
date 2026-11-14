@@ -1,4 +1,5 @@
 import 'package:chat_rooms/core/errors/failer.dart';
+import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/features/chat/data/chat_data_source/remote/chat_remote_data_source.dart';
 import 'package:chat_rooms/features/chat/data/models/message_model.dart';
 import 'package:chat_rooms/features/chat/data/repo/chat_repo.dart';
@@ -10,6 +11,15 @@ class ChatRepoImpl implements ChatRepo {
   final ChatRemoteDataSource _chatRemoteDataSource;
 
   ChatRepoImpl(this._chatRemoteDataSource);
+
+  @override
+  Future<Either<Failer, RoomModel>> getRoom(String roomID) async {
+    try {
+      return Right(await _chatRemoteDataSource.getRoom(roomID));
+    } catch (e) {
+      return Left(Failer(e.toString()));
+    }
+  }
 
   @override
   Stream<List<MessageModel>> getMessages(String roomID) {

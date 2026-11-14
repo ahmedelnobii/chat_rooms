@@ -6,15 +6,24 @@ import 'package:injectable/injectable.dart';
 
 @Singleton(as: CreateRoomRemoteDataSource)
 class CreateRoomFireBaseDataSource implements CreateRoomRemoteDataSource {
-  final FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   @override
   Future<void> createRoom(RoomModel room) async {
     try {
-      final doc = fireStore.collection(FirebaseKeys.allRoomsCollection).doc();
-      room.roomID = doc.id;
-      doc.set(room.toJson());
+      final roomRef = firestore
+          .collection(FirebaseKeys.allRoomsCollection)
+          .doc();
+      room.roomID = roomRef.id;
+
+      final roomData = room.toJson();
+      if (room.isPrivate) {
+        roomData['password'] = room.password;
+      }
+
+      await roomRef.set(roomData);
     } on FirebaseException catch (e) {
-      throw Exception(e.message);
+      throw Exception(e.message ?? e.code);
     }
   }
 }

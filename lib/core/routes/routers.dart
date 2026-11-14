@@ -4,7 +4,7 @@ import 'package:chat_rooms/features/auth/presentation/view/register_screen.dart'
 import 'package:chat_rooms/features/chat/presentation/view/chat_screen.dart';
 import 'package:chat_rooms/features/create_room/presentation/view/create_room_screen.dart';
 import 'package:chat_rooms/features/home/presentation/view/home_screen.dart';
-import 'package:chat_rooms/features/liked/liked_screen.dart';
+import 'package:chat_rooms/features/liked/presentation/view/liked_screen.dart';
 import 'package:chat_rooms/features/main/main_screen.dart';
 import 'package:chat_rooms/features/profile/profile_screen.dart';
 import 'package:chat_rooms/features/splash/splash_screen.dart';

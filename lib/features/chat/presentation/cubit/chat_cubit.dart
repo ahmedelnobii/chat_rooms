@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/features/chat/data/models/message_model.dart';
 import 'package:chat_rooms/features/chat/data/repo/chat_repo.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_state.dart';
@@ -13,7 +14,17 @@ class ChatCubit extends Cubit<ChatState> {
   ChatCubit(this._chatRepo) : super(ChatInit());
   StreamSubscription<List<MessageModel>>? _subscription;
   List<MessageModel> messages = [];
+  RoomModel? room;
   bool isSending = false;
+
+  Future<void> getRoom(String roomID) async {
+    emit(GetRoomLoading());
+    final result = await _chatRepo.getRoom(roomID);
+    result.fold((failure) => emit(GetRoomError(failure.message)), (room) {
+      this.room = room;
+      emit(GetRoomSuccess(room));
+    });
+  }
 
   void getMessage(String roomID) {
     emit(GetMessageLoading());
@@ -23,7 +34,11 @@ class ChatCubit extends Cubit<ChatState> {
         .listen(
           (msgs) {
             messages = msgs;
-            emit(GetMessageSuccess(msgs));
+            if (isSending) {
+              emit(SendMessageLoading(msgs: msgs));
+            } else {
+              emit(GetMessageSuccess(msgs));
+            }
           },
           onError: (error) {
             emit(GetMessageError(error.toString()));
@@ -31,21 +46,15 @@ class ChatCubit extends Cubit<ChatState> {
         );
   }
 
-  Future<bool> sendMessage(MessageModel msg) async {
-    if (isSending) return false;
+  Future<void> sendMessage(MessageModel msg) async {
+    if (isSending) return;
     isSending = true;
     emit(SendMessageLoading());
     final res = await _chatRepo.sendMessage(msg);
     isSending = false;
-    return res.fold(
-      (f) {
-        emit(SendMessageError(f.message));
-        return false;
-      },
-      (_) {
-        emit(SendMessageSuccess());
-        return true;
-      },
+    res.fold(
+      (f) => emit(SendMessageError(f.message)),
+      (_) => emit(SendMessageSuccess()),
     );
   }
 

@@ -13,6 +13,7 @@ class FirebaseKeys {
   static const String roomIDField = 'roomID';
   static const String roomCreatorNameField = 'roomCreatorName';
   static const String roomCreatorIDField = 'roomCreatorID';
+  static const String roomIsPrivateField = 'isPrivate';
   static const String roomChatSubCollection = 'roomChat';
   //messages
   static const String messageTextField = 'messageText';

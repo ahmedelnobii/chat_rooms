@@ -6,6 +6,8 @@ class RoomModel {
   String creatorId;
   String creatorName;
   String description;
+  bool isPrivate;
+  String? password;
 
   RoomModel({
     required this.creatorId,
@@ -13,6 +15,8 @@ class RoomModel {
     this.roomID,
     required this.roomName,
     required this.description,
+    this.isPrivate = false,
+    this.password,
   });
 
   factory RoomModel.fromJson(Map<String, dynamic> json) => RoomModel(
@@ -21,6 +25,7 @@ class RoomModel {
     roomID: json[FirebaseKeys.roomIDField] ?? '',
     roomName: json[FirebaseKeys.roomNameField] ?? '',
     description: json[FirebaseKeys.roomDescriptionField] ?? '',
+    isPrivate: json[FirebaseKeys.roomIsPrivateField] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
@@ -29,5 +34,6 @@ class RoomModel {
     FirebaseKeys.roomCreatorNameField: creatorName,
     FirebaseKeys.roomIDField: roomID,
     FirebaseKeys.roomCreatorIDField: creatorId,
+    FirebaseKeys.roomIsPrivateField: isPrivate,
   };
 }

@@ -1,17 +1,21 @@
-# chat_rooms
+# Chat Rooms
 
-A new Flutter project.
+## Private rooms
 
-## Getting Started
+Private room creation and password checks use Firebase callable functions.
+Passwords are hashed with scrypt on the server and stored in the `roomSecrets`
+collection, which is not readable by clients. Successful password checks add
+the signed-in user to the room's server-managed membership list. Firestore rules
+allow room chat access only to members of private rooms.
 
-This project is a starting point for a Flutter application.
+Before using room creation or private-room joining, install and deploy the
+backend and rules to the Firebase project configured for the app:
 
-A few resources to get you started if this is your first Flutter project:
+```sh
+cd functions
+npm install
+cd ..
+firebase deploy --project <firebase-project-id> --only functions,firestore:rules
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The Flutter app requires a signed-in Firebase user to use rooms.

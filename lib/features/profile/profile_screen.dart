@@ -37,7 +37,7 @@ class ProfileScreen extends StatelessWidget {
                   crossAxisAlignment: .stretch,
                   children: [
                     CircleAvatar(
-                      radius: 50.r,
+                      radius: 55.r,
                       child: ClipOval(
                         child: Image.network(
                           'https://i.pravatar.cc/151', // Replace with your profile image asset

@@ -1,7 +1,7 @@
 import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/auth/presentation/view/login_screen.dart';
 import 'package:chat_rooms/features/auth/presentation/view/register_screen.dart';
-import 'package:chat_rooms/features/chat/chat_screen.dart';
+import 'package:chat_rooms/features/chat/presentation/view/chat_screen.dart';
 import 'package:chat_rooms/features/create_room/presentation/view/create_room_screen.dart';
 import 'package:chat_rooms/features/home/presentation/view/home_screen.dart';
 import 'package:chat_rooms/features/liked/liked_screen.dart';
@@ -47,11 +47,12 @@ final routers = GoRouter(
       },
     ),
     GoRoute(
-      path: AppRouts.chatScreen,
+      path: "${AppRouts.chatScreen}/:id",
       pageBuilder: (context, state) {
+        final String roomID = state.pathParameters["id"] as String;
         return CustomTransitionPage<void>(
           key: state.pageKey,
-          child: const ChatScreen(),
+          child: ChatScreen(roomID),
           transitionDuration: const Duration(milliseconds: 100),
           reverseTransitionDuration: const Duration(milliseconds: 100),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {

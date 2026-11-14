@@ -19,6 +19,14 @@ import 'package:chat_rooms/features/auth/data/repo/auth_repo_impl.dart'
     as _i233;
 import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart'
     as _i124;
+import 'package:chat_rooms/features/chat/data/chat_data_source/remote/chat_fire_store_data_source.dart'
+    as _i703;
+import 'package:chat_rooms/features/chat/data/chat_data_source/remote/chat_remote_data_source.dart'
+    as _i700;
+import 'package:chat_rooms/features/chat/data/repo/chat_repo.dart' as _i149;
+import 'package:chat_rooms/features/chat/data/repo/chat_repo_impl.dart' as _i12;
+import 'package:chat_rooms/features/chat/presentation/cubit/chat_cubit.dart'
+    as _i137;
 import 'package:chat_rooms/features/create_room/data/ceate_room_data_source/remote/create_room_fire_base_data_source.dart'
     as _i132;
 import 'package:chat_rooms/features/create_room/data/ceate_room_data_source/remote/create_room_remote_data_source.dart'
@@ -45,6 +53,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i74.RemoteAuthDataSource>(
       () => _i1024.FireBaseAuthDataSource(),
     );
+    gh.singleton<_i700.ChatRemoteDataSource>(
+      () => _i703.ChatFireStoreDataSource(),
+    );
     gh.singleton<_i53.CreateRoomRepo>(
       () => _i198.CreateRoomRepoImpl(gh<_i104.CreateRoomRemoteDataSource>()),
     );
@@ -57,6 +68,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i623.CreateRoomCubit>(
       () => _i623.CreateRoomCubit(gh<_i53.CreateRoomRepo>()),
     );
+    gh.singleton<_i149.ChatRepo>(
+      () => _i12.ChatRepoImpl(gh<_i700.ChatRemoteDataSource>()),
+    );
+    gh.factory<_i137.ChatCubit>(() => _i137.ChatCubit(gh<_i149.ChatRepo>()));
     return this;
   }
 }

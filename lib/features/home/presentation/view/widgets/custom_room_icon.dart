@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 class CustomRoomIcon extends StatelessWidget {
   final String roomName;
   final String roomDescription;
-
+  final String roomID = "0";
   const CustomRoomIcon({
     super.key,
     this.roomName = "Room Name",
@@ -99,7 +99,7 @@ class CustomRoomIcon extends StatelessWidget {
             CustomButton(
               text: "Join",
               onPressed: () {
-                context.push(AppRouts.chatScreen);
+                context.push("${AppRouts.chatScreen}/$roomID");
               },
               fontsize: 16,
               weight: FontWeight.w400,

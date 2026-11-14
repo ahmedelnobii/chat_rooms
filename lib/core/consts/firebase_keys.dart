@@ -19,4 +19,5 @@ class FirebaseKeys {
   static const String messageSenderNameField = 'messageSenderName';
   static const String messageSenderIDField = 'messageSenderID';
   static const String messageTimestampField = 'messageTimestamp';
+  static const String messageIDField = 'messageID';
 }

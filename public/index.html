@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Chat Room</title>
+</head>
+<body>
+    <h2>Join Chat Room</h2>
+    <p>If the app doesn't open automatically, click below.</p>
+    <a id="openApp" href="#">Open App</a>
+
+    <script>
+        const match = window.location.pathname.match(/^\/room\/([^/]+)/);
+        
+        if (match) {
+            const roomId = match[1];
+            const appUrl = `chatrooms://app/room/${roomId}`;
+
+            document.getElementById('openApp').href = appUrl;
+
+            window.location.href = appUrl;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.chat_rooms",
+      "sha256_cert_fingerprints": [
+        "F2:44:61:DE:9D:8F:08:92:0D:38:FB:E0:D0:04:FB:24:07:2A:5C:37:8A:6C:C0:C8:2C:D2:4F:63:91:24:C4:DC"
+      ]
+    }
+  }
+]

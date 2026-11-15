@@ -1,0 +1,27 @@
+# flutter_native_splash configuration
+# Docs: https://pub.dev/packages/flutter_native_splash
+
+flutter_native_splash:
+  # Background color — matches AppColors.primiary (#0045CC)
+  color: "#ffffff"
+
+  # The centered logo image
+  image: assets/images/splash_icon.png
+
+  # Keep the splash visible until Flutter calls
+  # FlutterNativeSplash.remove() — lets our session check finish first
+  fullscreen: false
+
+  # ── Android 12+ (API 31+) SplashScreen API ──────────────────────────
+  android_12:
+    # Background behind the icon on Android 12+
+    color: "#ffffff"
+    # The icon shown in the circle on Android 12+
+    # Must be ≤ 1152×1152 px and fit inside a 768×768 px safe zone
+    image: assets/images/splash_icon.png
+    icon_background_color: "#0045CC"
+    # Branding image shown at the bottom (optional — remove if not needed)
+    # branding: assets/images/branding.png
+
+  # ── Web (disable — web not in scope) ───────────────────────────────
+  web: false

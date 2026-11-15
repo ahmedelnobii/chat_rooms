@@ -50,4 +50,23 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   Future<void> signInWithGoogle() => continueWithGoogle();
+
+  /// Checks if a Firebase session is still persisted.
+  /// Emits [SessionActiveState] with the user if logged in,
+  /// or [SessionExpiredState] if not.
+  Future<void> checkSession() async {
+    emit(SessionCheckLoadingState());
+    final res = await authRepository.getCurrentUser();
+    res.fold(
+      (l) => emit(SessionExpiredState()),
+      (user) {
+        if (user != null) {
+          cuurentUser = user;
+          emit(SessionActiveState(user));
+        } else {
+          emit(SessionExpiredState());
+        }
+      },
+    );
+  }
 }

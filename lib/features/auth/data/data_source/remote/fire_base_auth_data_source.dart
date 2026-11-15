@@ -56,6 +56,18 @@ class FireBaseAuthDataSource implements RemoteAuthDataSource {
   }
 
   @override
+  Future<UserModel?> getCurrentUser() async {
+    final firebaseUser = firebaseAuth.currentUser;
+    if (firebaseUser == null) return null;
+    final userDoc = await FirebaseFirestore.instance
+        .collection(FirebaseKeys.usersCollection)
+        .doc(firebaseUser.uid)
+        .get();
+    if (!userDoc.exists || userDoc.data() == null) return null;
+    return UserModel.fromJson(userDoc.data()!);
+  }
+
+  @override
   Future<UserModel> continueWithGoogle() async {
     try {
       final googleSignIn = GoogleSignIn.instance;

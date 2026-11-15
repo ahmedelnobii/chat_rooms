@@ -1,6 +1,9 @@
 import 'package:chat_rooms/core/consts/app_colors.dart';
+import 'package:chat_rooms/core/di/get_it.dart';
 import 'package:chat_rooms/core/routes/app_routs.dart';
+import 'package:chat_rooms/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,7 +21,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocProvider(
+      create: (_) => getIt<ProfileCubit>()..loadProfile(),
+      child: Scaffold(
       floatingActionButton: currentIndex == 0
           ? FloatingActionButton(
               shape: const CircleBorder(),
@@ -61,6 +66,7 @@ class _MainScreenState extends State<MainScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

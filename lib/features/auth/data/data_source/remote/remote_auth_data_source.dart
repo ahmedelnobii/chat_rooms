@@ -10,4 +10,7 @@ abstract class RemoteAuthDataSource {
     String name,
   );
   Future<UserModel> continueWithGoogle();
+
+  /// Returns the currently persisted Firebase session user, or null if none.
+  Future<UserModel?> getCurrentUser();
 }

@@ -1,5 +1,4 @@
 import 'package:chat_rooms/core/consts/app_colors.dart';
-import 'package:chat_rooms/core/di/get_it.dart';
 import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/auth/data/model/user_model.dart';
 import 'package:chat_rooms/features/profile/presentation/cubit/profile_cubit.dart';
@@ -15,14 +14,12 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ProfileCubit>()..loadProfile(),
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(16.r),
-            child: BlocBuilder<ProfileCubit, ProfileState>(
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(16.r),
+          child: BlocBuilder<ProfileCubit, ProfileState>(
               builder: (context, state) {
                 if (state.isLoading && state.profile == null) {
                   return const _ProfileContent(profile: null);
@@ -61,8 +58,7 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
 

@@ -15,4 +15,7 @@ abstract class AuthRepo {
     String name,
   );
   Future<Either<Failer, UserModel>> continueWithGoogle();
+
+  /// Checks if a Firebase session is still active and returns the user.
+  Future<Either<Failer, UserModel?>> getCurrentUser();
 }

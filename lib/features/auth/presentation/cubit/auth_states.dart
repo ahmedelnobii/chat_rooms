@@ -4,6 +4,16 @@ abstract class AuthStates {}
 
 class AuthInitialState extends AuthStates {}
 
+// Session check
+class SessionCheckLoadingState extends AuthStates {}
+
+class SessionActiveState extends AuthStates {
+  final UserModel userModel;
+  SessionActiveState(this.userModel);
+}
+
+class SessionExpiredState extends AuthStates {}
+
 class LoginLoadingState extends AuthStates {}
 
 class LoginSuccessState extends AuthStates {

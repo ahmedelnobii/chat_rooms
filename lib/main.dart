@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           providers: [BlocProvider(create: (_) => getIt<AuthCubit>())],
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,
-            title: 'Chat Rooms',
+            title: 'Rooms',
             routerConfig: routers,
           ),
         );

@@ -57,27 +57,15 @@ class CustomRoomIcon extends StatelessWidget {
                   flex: 2,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            roomName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontFamily: GoogleFonts.archivo().fontFamily,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        if (isPrivate)
-                          Icon(
-                            Icons.lock_outline,
-                            size: 16.r,
-                            color: Colors.grey,
-                          ),
-                      ],
+                    child: Text(
+                      roomName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.archivo().fontFamily,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -122,6 +110,16 @@ class CustomRoomIcon extends StatelessWidget {
               ],
             ),
           ),
+          if (isPrivate)
+            Positioned(
+              top: 12.r,
+              left: 12.r,
+              child: Icon(
+                Icons.lock_outline,
+                color: Colors.grey,
+                size: 20.r,
+              ),
+            ),
           if (onDelete != null)
             Positioned(
               top: 4.r,

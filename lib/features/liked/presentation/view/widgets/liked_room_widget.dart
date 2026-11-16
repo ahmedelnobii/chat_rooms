@@ -52,16 +52,27 @@ class LikedRoomWidget extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: IconButton(
-          tooltip: 'Unlike room',
-          onPressed: isUpdating ? null : onUnlike,
-          icon: isUpdating
-              ? SizedBox(
-                  width: 18.r,
-                  height: 18.r,
-                  child: const CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.favorite, color: Colors.redAccent),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (room.isPrivate)
+              Icon(
+                Icons.lock_outline,
+                color: Colors.grey,
+                size: 20.r,
+              ),
+            IconButton(
+              tooltip: 'Unlike room',
+              onPressed: isUpdating ? null : onUnlike,
+              icon: isUpdating
+                  ? SizedBox(
+                      width: 18.r,
+                      height: 18.r,
+                      child: const CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.favorite, color: Colors.redAccent),
+            ),
+          ],
         ),
       ),
     );

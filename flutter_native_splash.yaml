@@ -2,11 +2,13 @@
 # Docs: https://pub.dev/packages/flutter_native_splash
 
 flutter_native_splash:
-  # Background color — matches AppColors.primiary (#0045CC)
+  # Background color — always white in both Light & Dark mode
   color: "#ffffff"
+  color_dark: "#ffffff"
 
   # The centered logo image
   image: assets/images/splash_icon.png
+  image_dark: assets/images/splash_icon.png
 
   # Keep the splash visible until Flutter calls
   # FlutterNativeSplash.remove() — lets our session check finish first
@@ -16,10 +18,13 @@ flutter_native_splash:
   android_12:
     # Background behind the icon on Android 12+
     color: "#ffffff"
+    color_dark: "#ffffff"
     # The icon shown in the circle on Android 12+
     # Must be ≤ 1152×1152 px and fit inside a 768×768 px safe zone
     image: assets/images/splash_icon.png
+    image_dark: assets/images/splash_icon.png
     icon_background_color: "#0045CC"
+    icon_background_color_dark: "#0045CC"
     # Branding image shown at the bottom (optional — remove if not needed)
     # branding: assets/images/branding.png
 

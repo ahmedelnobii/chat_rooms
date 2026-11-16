@@ -81,4 +81,7 @@ class _FakeHomeRepo implements HomeRepo {
   Future<bool> verifyRoomPassword(String roomID, String password) {
     return verify(roomID, password);
   }
+
+  @override
+  Future<void> deleteRoom(String roomID) async {}
 }

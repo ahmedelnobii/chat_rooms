@@ -45,6 +45,72 @@ class HomeFirestoreDataSource implements HomeRemoteDataSource {
     }
   }
 
+  @override
+  Future<void> deleteRoom(String roomID) async {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUserId == null) {
+      throw StateError('Sign in to delete a room.');
+    }
+
+    try {
+      final roomRef = firestore
+          .collection(FirebaseKeys.allRoomsCollection)
+          .doc(roomID);
+      final roomSnapshot = await roomRef.get();
+      final roomData = roomSnapshot.data();
+
+      if (!roomSnapshot.exists || roomData == null) {
+        throw StateError('Room "$roomID" was not found.');
+      }
+
+      if (roomData[FirebaseKeys.roomCreatorIDField] != currentUserId) {
+        throw StateError('Only the room creator can delete this room.');
+      }
+
+      // 1. Delete all messages in roomChat subcollection
+      final messagesSnapshot = await roomRef
+          .collection(FirebaseKeys.roomChatSubCollection)
+          .get();
+      if (messagesSnapshot.docs.isNotEmpty) {
+        final batch = firestore.batch();
+        for (final doc in messagesSnapshot.docs) {
+          batch.delete(doc.reference);
+        }
+        await batch.commit();
+      }
+
+      // 2. Remove from current user's liked rooms
+      await firestore
+          .collection(FirebaseKeys.usersCollection)
+          .doc(currentUserId)
+          .collection(FirebaseKeys.userLikesSubCollection)
+          .doc(roomID)
+          .delete();
+
+      // Also attempt to clean up from any other users' userLikes if permitted/indexed
+      try {
+        final likedDocs = await firestore
+            .collectionGroup(FirebaseKeys.userLikesSubCollection)
+            .where(FirebaseKeys.roomIDField, isEqualTo: roomID)
+            .get();
+        if (likedDocs.docs.isNotEmpty) {
+          final likeBatch = firestore.batch();
+          for (final doc in likedDocs.docs) {
+            likeBatch.delete(doc.reference);
+          }
+          await likeBatch.commit();
+        }
+      } catch (_) {
+        // Ignore if collectionGroup index or cross-user rule is not active
+      }
+
+      // 3. Delete the room document itself
+      await roomRef.delete();
+    } on FirebaseException catch (e) {
+      throw Exception(e.message ?? e.code);
+    }
+  }
+
   Stream<List<RoomModel>> _roomsFrom(Query<Map<String, dynamic>> query) {
     return query.snapshots().map(
       (snapshot) => snapshot.docs

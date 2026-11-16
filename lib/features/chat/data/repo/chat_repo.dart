@@ -9,4 +9,5 @@ abstract class ChatRepo {
   Future<Either<Failer, RoomModel>> getRoom(String roomID);
   Stream<List<MessageModel>> getMessages(String roomID);
   Future<Either<Failer, void>> sendMessage(MessageModel message);
+  Future<Either<Failer, void>> deleteRoom(String roomID);
 }

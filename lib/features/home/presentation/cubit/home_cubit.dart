@@ -120,6 +120,28 @@ class HomeCubit extends Cubit<HomeState> {
     ]);
   }
 
+  Future<bool> deleteRoom(String roomID) async {
+    if (state.isDeletingRoom || _isClosing || isClosed) return false;
+    emit(state.copyWith(isDeletingRoom: true, clearDeleteRoomError: true));
+    try {
+      await _homeRepo.deleteRoom(roomID);
+      if (!isClosed) {
+        emit(state.copyWith(isDeletingRoom: false, clearDeleteRoomError: true));
+      }
+      return true;
+    } catch (error) {
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            isDeletingRoom: false,
+            deleteRoomError: error.toString().replaceFirst('Exception: ', ''),
+          ),
+        );
+      }
+      return false;
+    }
+  }
+
   @override
   Future<void> close() async {
     _isClosing = true;

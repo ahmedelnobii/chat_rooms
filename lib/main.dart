@@ -4,12 +4,17 @@ import 'package:chat_rooms/core/routes/routers.dart';
 import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   await Firebase.initializeApp();
   await GoogleSignIn.instance.initialize();
   Bloc.observer = AppBlocObserver();

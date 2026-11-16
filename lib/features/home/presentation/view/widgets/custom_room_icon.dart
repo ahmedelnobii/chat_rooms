@@ -10,12 +10,15 @@ class CustomRoomIcon extends StatelessWidget {
   final String roomDescription;
   final String roomID;
   final bool isPrivate;
+  final VoidCallback? onDelete;
+
   const CustomRoomIcon({
     super.key,
     required this.roomID,
     required this.roomName,
     required this.roomDescription,
     required this.isPrivate,
+    this.onDelete,
   });
 
   @override
@@ -33,85 +36,107 @@ class CustomRoomIcon extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: EdgeInsets.all(16.r),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Center(
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Image.asset(AppImages.chatIcon),
-                ),
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Expanded(
-              flex: 2,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        roomName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontFamily: GoogleFonts.archivo().fontFamily,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    if (isPrivate)
-                      Icon(Icons.lock_outline, size: 16.r, color: Colors.grey),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Expanded(
-              flex: 2,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SizedBox(
-                    width: constraints.maxWidth,
-                    height: constraints.maxHeight,
+      child: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Center(
                     child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.topLeft,
-                      child: SizedBox(
-                        width: constraints.maxWidth,
-                        child: Text(
-                          roomDescription,
-                          style: TextStyle(
-                            fontFamily: GoogleFonts.archivo().fontFamily,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
+                      fit: BoxFit.contain,
+                      child: Image.asset(AppImages.chatIcon),
                     ),
-                  );
-                },
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Expanded(
+                  flex: 2,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            roomName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: GoogleFonts.archivo().fontFamily,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        if (isPrivate)
+                          Icon(
+                            Icons.lock_outline,
+                            size: 16.r,
+                            color: Colors.grey,
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Expanded(
+                  flex: 2,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SizedBox(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.topLeft,
+                          child: SizedBox(
+                            width: constraints.maxWidth,
+                            child: Text(
+                              roomDescription,
+                              style: TextStyle(
+                                fontFamily: GoogleFonts.archivo().fontFamily,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 5.h),
+                CustomButton(
+                  text: "Join",
+                  onPressed: () =>
+                      joinRoom(context, roomID: roomID, isPrivate: isPrivate),
+                  fontsize: 16,
+                  weight: FontWeight.w400,
+                  padding: 4,
+                ),
+              ],
+            ),
+          ),
+          if (onDelete != null)
+            Positioned(
+              top: 4.r,
+              right: 4.r,
+              child: IconButton(
+                tooltip: 'Delete room',
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: Colors.redAccent,
+                  size: 20.r,
+                ),
+                onPressed: onDelete,
               ),
             ),
-            SizedBox(height: 5.h),
-            CustomButton(
-              text: "Join",
-              onPressed: () =>
-                  joinRoom(context, roomID: roomID, isPrivate: isPrivate),
-              fontsize: 16,
-              weight: FontWeight.w400,
-              padding: 4,
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

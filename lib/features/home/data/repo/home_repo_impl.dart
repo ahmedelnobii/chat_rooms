@@ -23,4 +23,9 @@ class HomeRepoImpl implements HomeRepo {
   Stream<List<RoomModel>> getMyRooms() {
     return _homeRemoteDataSource.getMyRooms();
   }
+
+  @override
+  Future<void> deleteRoom(String roomID) {
+    return _homeRemoteDataSource.deleteRoom(roomID);
+  }
 }

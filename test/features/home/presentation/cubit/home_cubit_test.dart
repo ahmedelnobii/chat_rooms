@@ -34,13 +34,31 @@ void main() {
     await allRooms.close();
     await myRooms.close();
   });
+
+  test('deletes room via repository', () async {
+    final allRooms = StreamController<List<RoomModel>>.broadcast(sync: true);
+    final myRooms = StreamController<List<RoomModel>>.broadcast(sync: true);
+    final repo = _FakeHomeRepo(allRooms.stream, myRooms.stream);
+    final cubit = HomeCubit(repo);
+
+    final deleted = await cubit.deleteRoom('room-456');
+
+    expect(deleted, isTrue);
+    expect(repo.deletedRoomID, 'room-456');
+    expect(cubit.state.isDeletingRoom, isFalse);
+
+    await cubit.close();
+    await allRooms.close();
+    await myRooms.close();
+  });
 }
 
 class _FakeHomeRepo implements HomeRepo {
   final Stream<List<RoomModel>> allRooms;
   final Stream<List<RoomModel>> myRooms;
+  String? deletedRoomID;
 
-  const _FakeHomeRepo(this.allRooms, this.myRooms);
+  _FakeHomeRepo(this.allRooms, this.myRooms);
 
   @override
   Stream<List<RoomModel>> getAllRooms() => allRooms;
@@ -50,4 +68,9 @@ class _FakeHomeRepo implements HomeRepo {
 
   @override
   Future<bool> verifyRoomPassword(String roomID, String password) async => true;
+
+  @override
+  Future<void> deleteRoom(String roomID) async {
+    deletedRoomID = roomID;
+  }
 }

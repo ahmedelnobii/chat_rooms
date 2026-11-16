@@ -104,6 +104,10 @@ class _FakeChatRepo implements ChatRepo {
   @override
   Future<Either<Failer, void>> sendMessage(MessageModel message) async =>
       const Right(null);
+
+  @override
+  Future<Either<Failer, void>> deleteRoom(String roomID) async =>
+      const Right(null);
 }
 
 class _FakeHomeRepo implements HomeRepo {
@@ -115,4 +119,7 @@ class _FakeHomeRepo implements HomeRepo {
 
   @override
   Future<bool> verifyRoomPassword(String roomID, String password) async => true;
+
+  @override
+  Future<void> deleteRoom(String roomID) async {}
 }

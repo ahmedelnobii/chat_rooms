@@ -2,6 +2,7 @@ import 'package:chat_rooms/core/consts/app_colors.dart';
 import 'package:chat_rooms/core/di/get_it.dart';
 import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/core/routes/app_routs.dart';
+import 'package:chat_rooms/core/widgets/delete_room_dialog.dart';
 import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_state.dart';
@@ -9,6 +10,7 @@ import 'package:chat_rooms/features/chat/data/models/message_model.dart';
 import 'package:chat_rooms/features/chat/presentation/view/widgets/chat_bubble.dart';
 import 'package:chat_rooms/features/liked/presentation/cubit/liked_cubit.dart';
 import 'package:chat_rooms/features/liked/presentation/cubit/liked_state.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,6 +74,20 @@ class _ChatScreenState extends State<ChatScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Unable to share this room: ${error.message}')),
       );
+    }
+  }
+
+  Future<void> _confirmDeleteRoom(BuildContext context, RoomModel room) async {
+    final roomID = room.roomID ?? widget.roomID;
+    if (roomID.isEmpty) return;
+
+    final shouldDelete = await DeleteRoomDialog.show(
+      context,
+      roomName: room.roomName,
+    );
+
+    if (shouldDelete == true && context.mounted) {
+      await context.read<ChatCubit>().deleteRoom(roomID);
     }
   }
 
@@ -253,6 +269,49 @@ class _ChatScreenState extends State<ChatScreen> {
                                   );
                                 },
                               ),
+                              BlocBuilder<ChatCubit, ChatState>(
+                                builder: (context, state) {
+                                  final room = context.read<ChatCubit>().room;
+                                  final currentUserId =
+                                      context
+                                          .read<AuthCubit>()
+                                          .cuurentUser
+                                          ?.userID ??
+                                      FirebaseAuth.instance.currentUser?.uid;
+                                  final isCreator =
+                                      room != null &&
+                                      currentUserId != null &&
+                                      currentUserId.isNotEmpty &&
+                                      room.creatorId == currentUserId;
+
+                                  if (!isCreator) {
+                                    return const SizedBox.shrink();
+                                  }
+
+                                  final isDeleting = state is DeleteRoomLoading;
+                                  return IconButton(
+                                    tooltip: 'Delete room',
+                                    icon: isDeleting
+                                        ? SizedBox(
+                                            width: 18.r,
+                                            height: 18.r,
+                                            child:
+                                                const CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                  strokeWidth: 2,
+                                                ),
+                                          )
+                                        : const Icon(
+                                            Icons.delete_outline,
+                                            color: Colors.white,
+                                          ),
+                                    onPressed: isDeleting
+                                        ? null
+                                        : () =>
+                                              _confirmDeleteRoom(context, room),
+                                  );
+                                },
+                              ),
                             ],
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.vertical(
@@ -315,6 +374,29 @@ class _ChatScreenState extends State<ChatScreen> {
                                         ),
                                       ),
                                     );
+                                  }
+                                  if (state is DeleteRoomError) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Unable to delete room: ${state.msg}',
+                                        ),
+                                        backgroundColor: Colors.redAccent,
+                                      ),
+                                    );
+                                  }
+                                  if (state is DeleteRoomSuccess) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Room deleted successfully.',
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                    if (Navigator.of(context).canPop()) {
+                                      Navigator.of(context).pop();
+                                    }
                                   }
                                 },
                                 builder: (_, state) {

@@ -1,7 +1,11 @@
+import 'package:chat_rooms/core/models/room_model.dart';
+import 'package:chat_rooms/core/widgets/delete_room_dialog.dart';
+import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_rooms/features/home/presentation/cubit/home_cubit.dart';
 import 'package:chat_rooms/features/home/presentation/cubit/home_state.dart';
 import 'package:chat_rooms/features/home/presentation/view/widgets/custom_room_icon.dart';
 import 'package:chat_rooms/features/home/presentation/view/widgets/room_card_shimmer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,6 +13,37 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SelectedTab extends StatelessWidget {
   final bool isMyRooms;
   const SelectedTab({super.key, required this.isMyRooms});
+
+  Future<void> _confirmDeleteRoom(BuildContext context, RoomModel room) async {
+    final roomID = room.roomID;
+    if (roomID == null || roomID.isEmpty) return;
+
+    final shouldDelete = await DeleteRoomDialog.show(
+      context,
+      roomName: room.roomName,
+    );
+
+    if (shouldDelete == true && context.mounted) {
+      final success = await context.read<HomeCubit>().deleteRoom(roomID);
+      if (!context.mounted) return;
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Room deleted successfully.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        final err = context.read<HomeCubit>().state.deleteRoomError;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Unable to delete room: ${err ?? "Unknown error"}'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +146,22 @@ class SelectedTab extends StatelessWidget {
                   ),
                   itemBuilder: (_, index) {
                     final room = rooms[index];
+                    final currentUserId =
+                        context.read<AuthCubit>().cuurentUser?.userID ??
+                        FirebaseAuth.instance.currentUser?.uid;
+                    final isCreator =
+                        currentUserId != null &&
+                        currentUserId.isNotEmpty &&
+                        room.creatorId == currentUserId;
+
                     return CustomRoomIcon(
                       roomID: room.roomID ?? '',
                       roomName: room.roomName,
                       roomDescription: room.description,
                       isPrivate: room.isPrivate,
+                      onDelete: isCreator && !state.isDeletingRoom
+                          ? () => _confirmDeleteRoom(context, room)
+                          : null,
                     );
                   },
                 ),

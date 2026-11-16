@@ -43,3 +43,12 @@ class GetMessageError extends ChatState {
   final String msg;
   GetMessageError(this.msg);
 }
+
+class DeleteRoomLoading extends ChatState {}
+
+class DeleteRoomSuccess extends ChatState {}
+
+class DeleteRoomError extends ChatState {
+  final String msg;
+  DeleteRoomError(this.msg);
+}

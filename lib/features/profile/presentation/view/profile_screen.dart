@@ -3,6 +3,7 @@ import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/auth/data/model/user_model.dart';
 import 'package:chat_rooms/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:chat_rooms/features/profile/presentation/cubit/profile_state.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,45 +21,45 @@ class ProfileScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(16.r),
           child: BlocBuilder<ProfileCubit, ProfileState>(
-              builder: (context, state) {
-                if (state.isLoading && state.profile == null) {
-                  return const _ProfileContent(profile: null);
-                }
+            builder: (context, state) {
+              if (state.isLoading && state.profile == null) {
+                return const _ProfileContent(profile: null);
+              }
 
-                if (state.error != null && state.profile == null) {
-                  return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          state.error!,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.grey.shade700),
-                        ),
-                        SizedBox(height: 12.h),
-                        TextButton(
-                          onPressed: () =>
-                              context.read<ProfileCubit>().loadProfile(),
-                          child: const Text('Try again'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+              if (state.error != null && state.profile == null) {
+                return Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        state.error!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey.shade700),
+                      ),
+                      SizedBox(height: 12.h),
+                      TextButton(
+                        onPressed: () =>
+                            context.read<ProfileCubit>().loadProfile(),
+                        child: const Text('Try again'),
+                      ),
+                    ],
+                  ),
+                );
+              }
 
-                final profile = state.profile;
-                if (profile == null) {
-                  return const Center(
-                    child: Text('Please sign in to view your profile.'),
-                  );
-                }
+              final profile = state.profile;
+              if (profile == null) {
+                return const Center(
+                  child: Text('Please sign in to view your profile.'),
+                );
+              }
 
-                return _ProfileContent(profile: profile);
-              },
-            ),
+              return _ProfileContent(profile: profile);
+            },
           ),
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -148,6 +149,7 @@ class _ProfileContent extends StatelessWidget {
             ),
             child: InkWell(
               onTap: () {
+                FirebaseAuth.instance.signOut();
                 context.go(AppRouts.loginScreen);
               },
               child: const ListTile(

@@ -7,4 +7,5 @@ abstract class ChatRemoteDataSource {
   Future<RoomModel> getRoom(String roomID);
   Stream<List<MessageModel>> getMessages(String roomID);
   Future<void> sendMessage(MessageModel msg);
+  Future<void> deleteRoom(String roomID);
 }

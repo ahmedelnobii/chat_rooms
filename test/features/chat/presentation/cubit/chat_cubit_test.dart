@@ -77,14 +77,34 @@ void main() {
       await messageStream.close();
     },
   );
+
+  test('deletes room and emits DeleteRoomSuccess', () async {
+    final messageStream = StreamController<List<MessageModel>>.broadcast(
+      sync: true,
+    );
+    final repo = _FakeChatRepo(
+      messageStream.stream,
+      Completer<Either<Failer, void>>(),
+    );
+    final cubit = ChatCubit(repo);
+
+    await cubit.deleteRoom('room-123');
+
+    expect(repo.deletedRoomID, 'room-123');
+    expect(cubit.state, isA<DeleteRoomSuccess>());
+
+    await cubit.close();
+    await messageStream.close();
+  });
 }
 
 class _FakeChatRepo implements ChatRepo {
   final Stream<List<MessageModel>> messages;
   final Completer<Either<Failer, void>> sendResult;
   final Either<Failer, RoomModel>? roomResult;
+  String? deletedRoomID;
 
-  const _FakeChatRepo(this.messages, this.sendResult, {this.roomResult});
+  _FakeChatRepo(this.messages, this.sendResult, {this.roomResult});
 
   @override
   Future<Either<Failer, RoomModel>> getRoom(String roomID) async =>
@@ -96,4 +116,10 @@ class _FakeChatRepo implements ChatRepo {
   @override
   Future<Either<Failer, void>> sendMessage(MessageModel message) =>
       sendResult.future;
+
+  @override
+  Future<Either<Failer, void>> deleteRoom(String roomID) async {
+    deletedRoomID = roomID;
+    return const Right(null);
+  }
 }

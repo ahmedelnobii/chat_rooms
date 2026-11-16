@@ -35,4 +35,14 @@ class ChatRepoImpl implements ChatRepo {
       return Left(Failer(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failer, void>> deleteRoom(String roomID) async {
+    try {
+      await _chatRemoteDataSource.deleteRoom(roomID);
+      return const Right(null);
+    } catch (e) {
+      return Left(Failer(e.toString()));
+    }
+  }
 }

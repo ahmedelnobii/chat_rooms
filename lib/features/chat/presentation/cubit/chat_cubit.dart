@@ -58,6 +58,21 @@ class ChatCubit extends Cubit<ChatState> {
     );
   }
 
+  Future<void> deleteRoom(String roomID) async {
+    await _subscription?.cancel();
+    _subscription = null;
+    emit(DeleteRoomLoading());
+    final res = await _chatRepo.deleteRoom(roomID);
+    if (isClosed) return;
+    res.fold(
+      (f) {
+        emit(DeleteRoomError(f.message));
+        getMessage(roomID);
+      },
+      (_) => emit(DeleteRoomSuccess()),
+    );
+  }
+
   @override
   Future<void> close() async {
     await _subscription?.cancel();

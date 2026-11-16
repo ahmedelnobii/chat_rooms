@@ -7,6 +7,8 @@ class HomeState {
   final bool isLoadingMyRooms;
   final String? allRoomsError;
   final String? myRoomsError;
+  final bool isDeletingRoom;
+  final String? deleteRoomError;
 
   const HomeState({
     this.allRooms = const [],
@@ -15,6 +17,8 @@ class HomeState {
     this.isLoadingMyRooms = true,
     this.allRoomsError,
     this.myRoomsError,
+    this.isDeletingRoom = false,
+    this.deleteRoomError,
   });
 
   HomeState copyWith({
@@ -24,8 +28,11 @@ class HomeState {
     bool? isLoadingMyRooms,
     String? allRoomsError,
     String? myRoomsError,
+    bool? isDeletingRoom,
+    String? deleteRoomError,
     bool clearAllRoomsError = false,
     bool clearMyRoomsError = false,
+    bool clearDeleteRoomError = false,
   }) {
     return HomeState(
       allRooms: allRooms ?? this.allRooms,
@@ -38,6 +45,10 @@ class HomeState {
       myRoomsError: clearMyRoomsError
           ? null
           : myRoomsError ?? this.myRoomsError,
+      isDeletingRoom: isDeletingRoom ?? this.isDeletingRoom,
+      deleteRoomError: clearDeleteRoomError
+          ? null
+          : deleteRoomError ?? this.deleteRoomError,
     );
   }
 }

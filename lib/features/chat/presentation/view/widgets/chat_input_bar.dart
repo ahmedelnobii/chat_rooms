@@ -96,15 +96,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                 ),
               ),
               SizedBox(width: 8.w),
-              BlocBuilder<ChatCubit, ChatState>(
-                builder: (context, state) {
-                  final isSending = state is SendMessageLoading;
-                  return LivelySendButton(
-                    isSending: isSending,
-                    onPressed: _sendMessage,
-                  );
-                },
-              ),
+              LivelySendButton(onPressed: _sendMessage),
             ],
           ),
         ),

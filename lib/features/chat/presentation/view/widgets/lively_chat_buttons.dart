@@ -79,12 +79,10 @@ class _LivelyActionButtonState extends State<LivelyActionButton> {
 }
 
 class LivelySendButton extends StatefulWidget {
-  final bool isSending;
   final VoidCallback onPressed;
 
   const LivelySendButton({
     super.key,
-    required this.isSending,
     required this.onPressed,
   });
 
@@ -131,24 +129,10 @@ class _LivelySendButtonState extends State<LivelySendButton> {
             ],
           ),
           child: Center(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: widget.isSending
-                  ? SizedBox(
-                      key: const ValueKey('sending'),
-                      width: 18.r,
-                      height: 18.r,
-                      child: const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : Icon(
-                      Icons.send_rounded,
-                      key: const ValueKey('send'),
-                      color: Colors.white,
-                      size: 20.r,
-                    ),
+            child: Icon(
+              Icons.send_rounded,
+              color: Colors.white,
+              size: 20.r,
             ),
           ),
         ),

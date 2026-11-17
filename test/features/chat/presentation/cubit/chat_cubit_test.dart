@@ -96,6 +96,31 @@ void main() {
     await cubit.close();
     await messageStream.close();
   });
+
+  test('tracks enter and leave room presence', () async {
+    final messageStream = StreamController<List<MessageModel>>.broadcast(
+      sync: true,
+    );
+    final repo = _FakeChatRepo(
+      messageStream.stream,
+      Completer<Either<Failer, void>>(),
+    );
+    final cubit = ChatCubit(repo);
+
+    await cubit.enterRoomPresence(
+      roomID: 'room-1',
+      userID: 'user-1',
+      userName: 'Ahmed',
+    );
+    expect(repo.joinedUserID, 'user-1');
+    expect(repo.joinedUserName, 'Ahmed');
+
+    await cubit.leaveRoomPresence();
+    expect(repo.leftUserID, 'user-1');
+
+    await cubit.close();
+    await messageStream.close();
+  });
 }
 
 class _FakeChatRepo implements ChatRepo {
@@ -103,12 +128,38 @@ class _FakeChatRepo implements ChatRepo {
   final Completer<Either<Failer, void>> sendResult;
   final Either<Failer, RoomModel>? roomResult;
   String? deletedRoomID;
+  String? joinedUserID;
+  String? joinedUserName;
+  String? leftUserID;
 
   _FakeChatRepo(this.messages, this.sendResult, {this.roomResult});
 
   @override
   Future<Either<Failer, RoomModel>> getRoom(String roomID) async =>
       roomResult ?? Left(Failer('Room not found'));
+
+  @override
+  Stream<RoomModel> watchRoom(String roomID) => const Stream.empty();
+
+  @override
+  Future<Either<Failer, void>> joinRoomPresence({
+    required String roomID,
+    required String userID,
+    required String userName,
+  }) async {
+    joinedUserID = userID;
+    joinedUserName = userName;
+    return const Right(null);
+  }
+
+  @override
+  Future<Either<Failer, void>> leaveRoomPresence({
+    required String roomID,
+    required String userID,
+  }) async {
+    leftUserID = userID;
+    return const Right(null);
+  }
 
   @override
   Stream<List<MessageModel>> getMessages(String roomID) => messages;

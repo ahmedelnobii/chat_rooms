@@ -22,6 +22,45 @@ class ChatRepoImpl implements ChatRepo {
   }
 
   @override
+  Stream<RoomModel> watchRoom(String roomID) {
+    return _chatRemoteDataSource.watchRoom(roomID);
+  }
+
+  @override
+  Future<Either<Failer, void>> joinRoomPresence({
+    required String roomID,
+    required String userID,
+    required String userName,
+  }) async {
+    try {
+      await _chatRemoteDataSource.joinRoomPresence(
+        roomID: roomID,
+        userID: userID,
+        userName: userName,
+      );
+      return const Right(null);
+    } catch (e) {
+      return Left(Failer(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failer, void>> leaveRoomPresence({
+    required String roomID,
+    required String userID,
+  }) async {
+    try {
+      await _chatRemoteDataSource.leaveRoomPresence(
+        roomID: roomID,
+        userID: userID,
+      );
+      return const Right(null);
+    } catch (e) {
+      return Left(Failer(e.toString()));
+    }
+  }
+
+  @override
   Stream<List<MessageModel>> getMessages(String roomID) {
     return _chatRemoteDataSource.getMessages(roomID);
   }

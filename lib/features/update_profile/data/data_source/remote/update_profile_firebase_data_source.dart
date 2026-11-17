@@ -134,6 +134,19 @@ class UpdateProfileFirebaseDataSource implements UpdateProfileRemoteDataSource {
       };
     }
 
+    // Also update the user's name if they are currently listed in any room's active members map
+    final allRoomsForMembers = await firestore
+        .collection(FirebaseKeys.allRoomsCollection)
+        .get();
+    for (final roomDoc in allRoomsForMembers.docs) {
+      final members = roomDoc.data()[FirebaseKeys.roomMembersField];
+      if (members is Map && members.containsKey(userID)) {
+        final existing = refsToUpdate[roomDoc.reference] ?? <String, dynamic>{};
+        existing['${FirebaseKeys.roomMembersField}.$userID'] = newName;
+        refsToUpdate[roomDoc.reference] = existing;
+      }
+    }
+
     // Collect all messages sent by this user
     bool updatedViaCollectionGroup = false;
     try {

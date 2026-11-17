@@ -31,4 +31,21 @@ void main() {
     expect(RoomModel.fromJson(json).isPrivate, isTrue);
     expect(RoomModel.fromJson(json).password, isNull);
   });
+
+  test('parses active members map from json', () {
+    final room = RoomModel.fromJson({
+      'roomCreatorID': 'creator-1',
+      'roomCreatorName': 'Creator',
+      'roomID': 'room-1',
+      'roomName': 'Flutter Room',
+      'roomDescription': 'Desc',
+      'isPrivate': false,
+      'members': {'u1': 'Ahmed', 'u2': 'Sara'},
+    });
+
+    expect(room.members, [
+      const RoomMemberModel(userID: 'u1', name: 'Ahmed'),
+      const RoomMemberModel(userID: 'u2', name: 'Sara'),
+    ]);
+  });
 }

@@ -53,6 +53,8 @@ exports.createRoom = onCall(async (request) => {
       roomCreatorName,
       roomCreatorID: userId,
       isPrivate,
+      membersCount: 0,
+      createdAt: new Date().toISOString(),
     });
 
     if (secret) {

@@ -28,7 +28,9 @@ service cloud.firestore {
           'roomDescription',
           'roomCreatorName',
           'roomCreatorID',
-          'isPrivate'
+          'isPrivate',
+          'membersCount',
+          'createdAt'
         ])
         && request.resource.data.roomID == roomID
         && request.resource.data.roomCreatorID == request.auth.uid
@@ -50,9 +52,15 @@ service cloud.firestore {
     match /allRooms/{roomID} {
       allow read: if signedIn();
       allow create: if signedIn() && validPublicRoomCreate(roomID);
-      allow update: if signedIn()
+      allow update: if (
+        signedIn()
         && resource.data.roomCreatorID == request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['roomCreatorName']);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['roomCreatorName'])
+      ) || (
+        canAccessRoom(roomID)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'membersCount'])
+        && request.resource.data.get('members', {}).diff(resource.data.get('members', {})).affectedKeys().hasOnly([request.auth.uid])
+      );
       allow delete: if signedIn() && resource.data.roomCreatorID == request.auth.uid;
 
       match /roomChat/{messageID} {

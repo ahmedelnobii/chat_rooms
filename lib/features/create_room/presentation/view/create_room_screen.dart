@@ -51,6 +51,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
           description: roomDescription,
           isPrivate: _isPrivate,
           password: _isPrivate ? _passwordController.text : null,
+          createdAt: DateTime.now().toUtc(),
         ),
       );
       // Form is validated - ready for cubit / backend integration

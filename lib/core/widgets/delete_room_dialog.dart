@@ -78,7 +78,10 @@ class DeleteRoomDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text('Cancel'),
+                child: const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text('Cancel'),
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -94,7 +97,10 @@ class DeleteRoomDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text('Delete room'),
+                child: const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text('Delete room'),
+                ),
               ),
             ),
           ],

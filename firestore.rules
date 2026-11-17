@@ -50,7 +50,9 @@ service cloud.firestore {
     match /allRooms/{roomID} {
       allow read: if signedIn();
       allow create: if signedIn() && validPublicRoomCreate(roomID);
-      allow update: if false;
+      allow update: if signedIn()
+        && resource.data.roomCreatorID == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['roomCreatorName']);
       allow delete: if signedIn() && resource.data.roomCreatorID == request.auth.uid;
 
       match /roomChat/{messageID} {
@@ -58,7 +60,9 @@ service cloud.firestore {
         allow create: if canAccessRoom(roomID)
           && request.resource.data.roomID == roomID
           && request.resource.data.messageSenderID == request.auth.uid;
-        allow update: if false;
+        allow update: if signedIn()
+          && resource.data.messageSenderID == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['messageSenderName']);
         allow delete: if signedIn()
           && get(/databases/$(database)/documents/allRooms/$(roomID)).data.roomCreatorID == request.auth.uid;
       }

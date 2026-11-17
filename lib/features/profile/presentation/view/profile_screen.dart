@@ -3,6 +3,7 @@ import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/auth/data/model/user_model.dart';
 import 'package:chat_rooms/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:chat_rooms/features/profile/presentation/cubit/profile_state.dart';
+import 'package:chat_rooms/features/update_profile/presentation/view/widgets/reauth_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,6 +68,25 @@ class _ProfileContent extends StatelessWidget {
   final UserModel? profile;
 
   const _ProfileContent({required this.profile});
+
+  Future<void> _onEditProfileTap(BuildContext context) async {
+    final currentProfile = profile;
+    if (currentProfile == null) return;
+
+    final verified = await ReauthDialog.show(
+      context,
+      initialEmail: currentProfile.email,
+    );
+    if (verified != true || !context.mounted) return;
+
+    final updatedUser = await context.push<UserModel?>(
+      AppRouts.updateProfileScreen,
+      extra: currentProfile,
+    );
+    if (updatedUser != null && context.mounted) {
+      context.read<ProfileCubit>().setProfile(updatedUser);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,16 +167,45 @@ class _ProfileContent extends StatelessWidget {
                 ),
               ],
             ),
-            child: InkWell(
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-                context.go(AppRouts.loginScreen);
-              },
-              child: const ListTile(
-                leading: Icon(Icons.logout, color: Colors.red),
-                title: Text('Sign out', style: TextStyle(color: Colors.red)),
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
+            child: Column(
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(20.r),
+                  onTap: profile == null
+                      ? null
+                      : () => _onEditProfileTap(context),
+                  child: const ListTile(
+                    leading: Icon(
+                      Icons.edit_outlined,
+                      color: AppColors.primiary,
+                    ),
+                    title: Text(
+                      'Edit profile',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                  ),
+                ),
+                Divider(height: 1, indent: 16.w, endIndent: 16.w),
+                InkWell(
+                  borderRadius: BorderRadius.circular(20.r),
+                  onTap: () {
+                    FirebaseAuth.instance.signOut();
+                    context.go(AppRouts.loginScreen);
+                  },
+                  child: const ListTile(
+                    leading: Icon(Icons.logout, color: Colors.red),
+                    title: Text(
+                      'Sign out',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                  ),
+                ),
+              ],
             ),
           ),
           if (MediaQuery.sizeOf(context).height < 500) SizedBox(height: 120.h),

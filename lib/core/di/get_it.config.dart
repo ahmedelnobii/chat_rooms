@@ -67,6 +67,16 @@ import 'package:chat_rooms/features/profile/data/repo/profile_repo_impl.dart'
     as _i894;
 import 'package:chat_rooms/features/profile/presentation/cubit/profile_cubit.dart'
     as _i106;
+import 'package:chat_rooms/features/update_profile/data/data_source/remote/update_profile_firebase_data_source.dart'
+    as _i107;
+import 'package:chat_rooms/features/update_profile/data/data_source/remote/update_profile_remote_data_source.dart'
+    as _i108;
+import 'package:chat_rooms/features/update_profile/data/repo/update_profile_repo.dart'
+    as _i109;
+import 'package:chat_rooms/features/update_profile/data/repo/update_profile_repo_impl.dart'
+    as _i110;
+import 'package:chat_rooms/features/update_profile/presentation/cubit/update_profile_cubit.dart'
+    as _i111;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -112,6 +122,17 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i106.ProfileCubit>(
       () => _i106.ProfileCubit(gh<_i153.ProfileRepo>()),
+    );
+    gh.singleton<_i108.UpdateProfileRemoteDataSource>(
+      () => _i107.UpdateProfileFirebaseDataSource(),
+    );
+    gh.singleton<_i109.UpdateProfileRepo>(
+      () => _i110.UpdateProfileRepoImpl(
+        gh<_i108.UpdateProfileRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i111.UpdateProfileCubit>(
+      () => _i111.UpdateProfileCubit(gh<_i109.UpdateProfileRepo>()),
     );
     gh.singleton<_i954.LikedRepo>(
       () => _i585.LikedRepoImpl(gh<_i207.LikedRemoteDataSource>()),

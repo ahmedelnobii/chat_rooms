@@ -194,7 +194,10 @@ class _RoomPasswordDialogState extends State<RoomPasswordDialog> {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text('Cancel'),
+                      child: const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text('Cancel'),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -219,7 +222,10 @@ class _RoomPasswordDialogState extends State<RoomPasswordDialog> {
                                 strokeWidth: 2,
                               ),
                             )
-                          : const Text('Join room'),
+                          : const FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text('Join room'),
+                            ),
                     ),
                   ),
                 ],

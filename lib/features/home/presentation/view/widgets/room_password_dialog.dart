@@ -32,22 +32,15 @@ class _RoomPasswordDialogState extends State<RoomPasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RoomPasswordCubit, RoomPasswordState>(
+      listenWhen: (_, state) => state is RoomPasswordSuccess,
       listener: (context, state) {
-        if (state is RoomPasswordSuccess) {
-          Navigator.of(context).pop(true);
-        } else if (state is RoomPasswordInitial && state.message != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message!),
-              backgroundColor: Colors.redAccent,
-              behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 3),
-            ),
-          );
-        }
+        Navigator.of(context).pop(true);
       },
       builder: (context, state) {
         final isLoading = state is RoomPasswordLoading;
+        final errorMessage = state is RoomPasswordInitial
+            ? state.message
+            : null;
 
         return PopScope(
           canPop: !isLoading,
@@ -130,12 +123,19 @@ class _RoomPasswordDialogState extends State<RoomPasswordDialog> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide.none,
+                      borderSide: errorMessage != null
+                          ? const BorderSide(
+                              color: Colors.redAccent,
+                              width: 1.5,
+                            )
+                          : BorderSide.none,
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: const BorderSide(
-                        color: AppColors.primiary,
+                      borderSide: BorderSide(
+                        color: errorMessage != null
+                            ? Colors.redAccent
+                            : AppColors.primiary,
                         width: 1.5,
                       ),
                     ),
@@ -144,6 +144,35 @@ class _RoomPasswordDialogState extends State<RoomPasswordDialog> {
                       vertical: 16,
                     ),
                   ),
+                ),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  child: errorMessage == null
+                      ? const SizedBox(width: double.infinity)
+                      : Padding(
+                          padding: const EdgeInsets.only(top: 10, left: 4),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.error_outline_rounded,
+                                color: Colors.redAccent,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  errorMessage,
+                                  style: const TextStyle(
+                                    color: Colors.redAccent,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                 ),
               ],
             ),

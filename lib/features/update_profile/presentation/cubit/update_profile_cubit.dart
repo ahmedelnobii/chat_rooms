@@ -90,6 +90,28 @@ class UpdateProfileCubit extends Cubit<UpdateProfileState> {
     );
   }
 
+  Future<void> deleteAccount() async {
+    if (state.isDeleting || state.isSaving) return;
+
+    emit(state.copyWith(isDeleting: true, clearDeleteError: true));
+
+    final result = await _updateProfileRepo.deleteAccount();
+    if (isClosed) return;
+
+    result.fold(
+      (failure) => emit(
+        state.copyWith(isDeleting: false, deleteError: failure.message),
+      ),
+      (_) => emit(
+        state.copyWith(
+          isDeleting: false,
+          accountDeleted: true,
+          clearDeleteError: true,
+        ),
+      ),
+    );
+  }
+
   Future<void> updateProfile({
     required String name,
     String? newPassword,

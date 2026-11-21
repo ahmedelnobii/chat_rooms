@@ -202,6 +202,99 @@ class UpdateProfileFirebaseDataSource implements UpdateProfileRemoteDataSource {
     }
   }
 
+  @override
+  Future<void> deleteAccount() async {
+    final user = firebaseAuth.currentUser;
+    if (user == null) {
+      throw StateError('Please sign in again.');
+    }
+    final uid = user.uid;
+
+    try {
+      // 1. Delete every room created by this user (messages + likes + room doc)
+      final myRooms = await firestore
+          .collection(FirebaseKeys.allRoomsCollection)
+          .where(FirebaseKeys.roomCreatorIDField, isEqualTo: uid)
+          .get();
+      for (final roomDoc in myRooms.docs) {
+        await _deleteRoomCompletely(roomDoc.reference);
+      }
+
+      // 2. Remove the user from the active members of other rooms
+      try {
+        final memberRooms = await firestore
+            .collection(FirebaseKeys.allRoomsCollection)
+            .where(
+              '${FirebaseKeys.roomMembersField}.$uid',
+              isGreaterThan: '',
+            )
+            .get();
+        for (final roomDoc in memberRooms.docs) {
+          await roomDoc.reference.update({
+            '${FirebaseKeys.roomMembersField}.$uid': FieldValue.delete(),
+          });
+        }
+      } catch (_) {
+        // Best effort: presence entries are cleaned up on room exit anyway
+      }
+
+      // 3. Delete the user's liked rooms and user document
+      final userRef = firestore
+          .collection(FirebaseKeys.usersCollection)
+          .doc(uid);
+      final likes = await userRef
+          .collection(FirebaseKeys.userLikesSubCollection)
+          .get();
+      await _deleteInBatches(likes.docs.map((d) => d.reference).toList());
+      await userRef.delete();
+
+      // 4. Delete the Firebase Auth account (requires a recent login)
+      await user.delete();
+
+      // 5. Clear the Google session if there is one
+      try {
+        await GoogleSignIn.instance.signOut();
+      } catch (_) {}
+    } on FirebaseAuthException catch (e) {
+      throw StateError(_mapAuthError(e));
+    } on FirebaseException catch (e) {
+      throw StateError(e.message ?? e.code);
+    }
+  }
+
+  Future<void> _deleteRoomCompletely(
+    DocumentReference<Map<String, dynamic>> roomRef,
+  ) async {
+    final messages = await roomRef
+        .collection(FirebaseKeys.roomChatSubCollection)
+        .get();
+    await _deleteInBatches(messages.docs.map((d) => d.reference).toList());
+
+    try {
+      final likedDocs = await firestore
+          .collectionGroup(FirebaseKeys.userLikesSubCollection)
+          .where(FirebaseKeys.roomIDField, isEqualTo: roomRef.id)
+          .get();
+      await _deleteInBatches(likedDocs.docs.map((d) => d.reference).toList());
+    } catch (_) {
+      // Ignore if the collection group index/cross-user rule is not active
+    }
+
+    await roomRef.delete();
+  }
+
+  Future<void> _deleteInBatches(List<DocumentReference> refs) async {
+    const batchSize = 450;
+    for (var i = 0; i < refs.length; i += batchSize) {
+      final batch = firestore.batch();
+      final end = (i + batchSize < refs.length) ? i + batchSize : refs.length;
+      for (var j = i; j < end; j++) {
+        batch.delete(refs[j]);
+      }
+      await batch.commit();
+    }
+  }
+
   String _mapAuthError(FirebaseAuthException e) {
     switch (e.code) {
       case 'wrong-password':

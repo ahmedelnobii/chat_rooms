@@ -13,4 +13,5 @@ abstract class UpdateProfileRepo {
     required String name,
     String? newPassword,
   });
+  Future<Either<Failer, void>> deleteAccount();
 }

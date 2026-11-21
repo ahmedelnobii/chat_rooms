@@ -61,4 +61,16 @@ class UpdateProfileRepoImpl implements UpdateProfileRepo {
       return Left(Failer(error.toString()));
     }
   }
+
+  @override
+  Future<Either<Failer, void>> deleteAccount() async {
+    try {
+      await _remoteDataSource.deleteAccount();
+      return const Right(null);
+    } on StateError catch (error) {
+      return Left(Failer(error.message));
+    } catch (error) {
+      return Left(Failer(error.toString()));
+    }
+  }
 }

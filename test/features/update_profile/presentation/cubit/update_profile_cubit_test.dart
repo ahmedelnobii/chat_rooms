@@ -70,6 +70,18 @@ void main() {
       await cubit.close();
     },
   );
+  test('deleteAccount emits accountDeleted on success', () async {
+    final repo = _FakeUpdateProfileRepo();
+    final cubit = UpdateProfileCubit(repo);
+
+    await cubit.deleteAccount();
+
+    expect(repo.deleteCalled, isTrue);
+    expect(cubit.state.accountDeleted, isTrue);
+    expect(cubit.state.isDeleting, isFalse);
+    expect(cubit.state.deleteError, isNull);
+    await cubit.close();
+  });
 }
 
 class _FakeUpdateProfileRepo implements UpdateProfileRepo {
@@ -77,6 +89,7 @@ class _FakeUpdateProfileRepo implements UpdateProfileRepo {
   final Either<Failer, void> reauthResult;
   String? lastUpdatedName;
   String? lastUpdatedPassword;
+  bool deleteCalled = false;
 
   _FakeUpdateProfileRepo({
     this.googleUser = false,
@@ -94,6 +107,12 @@ class _FakeUpdateProfileRepo implements UpdateProfileRepo {
     required String email,
     required String password,
   }) async => reauthResult;
+
+  @override
+  Future<Either<Failer, void>> deleteAccount() async {
+    deleteCalled = true;
+    return const Right(null);
+  }
 
   @override
   Future<Either<Failer, UserModel>> updateProfile({

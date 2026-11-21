@@ -1,11 +1,13 @@
 import 'package:chat_rooms/core/consts/app_colors.dart';
 import 'package:chat_rooms/core/di/get_it.dart';
+import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/core/widgets/custom_button.dart';
 import 'package:chat_rooms/features/auth/data/model/user_model.dart';
 import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_rooms/features/create_room/presentation/view/widgets/create_room_text_field.dart';
 import 'package:chat_rooms/features/update_profile/presentation/cubit/update_profile_cubit.dart';
 import 'package:chat_rooms/features/update_profile/presentation/cubit/update_profile_state.dart';
+import 'package:chat_rooms/features/update_profile/presentation/view/widgets/delete_account_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -61,12 +63,41 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
+  Future<void> _handleDeleteAccount(BuildContext context) async {
+    final confirmed = await DeleteAccountDialog.show(context);
+    if (confirmed == true && context.mounted) {
+      await context.read<UpdateProfileCubit>().deleteAccount();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<UpdateProfileCubit>(),
       child: BlocConsumer<UpdateProfileCubit, UpdateProfileState>(
         listener: (context, state) {
+          if (state.deleteError != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.deleteError!),
+                backgroundColor: Colors.redAccent,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+
+          if (state.accountDeleted) {
+            context.read<AuthCubit>().cuurentUser = null;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Your account has been deleted.'),
+                backgroundColor: Colors.green,
+              ),
+            );
+            context.go(AppRouts.loginScreen);
+            return;
+          }
+
           if (state.saveError != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -92,6 +123,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         builder: (context, state) {
           final isGoogleUser = state.isGoogleUser;
           final isSaving = state.isSaving;
+          final isDeleting = state.isDeleting;
+          final isBusy = isSaving || isDeleting;
 
           return Scaffold(
             backgroundColor: AppColors.background,
@@ -104,7 +137,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   Icons.arrow_back_ios_new_rounded,
                   color: Colors.black87,
                 ),
-                onPressed: isSaving ? null : () => context.pop(),
+                onPressed: isBusy ? null : () => context.pop(),
               ),
               title: Text(
                 'Update Profile',
@@ -263,9 +296,45 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               text: isSaving
                                   ? 'Saving changes...'
                                   : 'Save Changes',
-                              onPressed: isSaving
+                              onPressed: isBusy
                                   ? null
                                   : () => _handleSave(context, isGoogleUser),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 24.h),
+
+                      // Danger Zone
+                      Container(
+                        padding: EdgeInsets.all(20.r),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24.r),
+                          border: Border.all(
+                            color: Colors.redAccent.withValues(alpha: 0.25),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Delete Account',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                            SizedBox(height: 16.h),
+                            CustomButton(
+                              text: isDeleting
+                                  ? 'Deleting account...'
+                                  : 'Delete Account',
+                              backgroundColor: Colors.redAccent,
+                              onPressed: isBusy
+                                  ? null
+                                  : () => _handleDeleteAccount(context),
                             ),
                           ],
                         ),

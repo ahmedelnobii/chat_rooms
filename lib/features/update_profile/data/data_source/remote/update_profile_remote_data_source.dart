@@ -11,4 +11,5 @@ abstract class UpdateProfileRemoteDataSource {
     required String name,
     String? newPassword,
   });
+  Future<void> deleteAccount();
 }

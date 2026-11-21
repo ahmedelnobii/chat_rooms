@@ -25,6 +25,60 @@ class ChatFireStoreDataSource implements ChatRemoteDataSource {
   }
 
   @override
+  Stream<RoomModel> watchRoom(String roomID) {
+    return fireStore
+        .collection(FirebaseKeys.allRoomsCollection)
+        .doc(roomID)
+        .snapshots()
+        .map((snapshot) {
+          final data = snapshot.data();
+          if (!snapshot.exists || data == null) {
+            throw StateError('Room "$roomID" was not found.');
+          }
+          return RoomModel.fromJson({
+            ...data,
+            FirebaseKeys.roomIDField: snapshot.id,
+          });
+        });
+  }
+
+  @override
+  Future<void> joinRoomPresence({
+    required String roomID,
+    required String userID,
+    required String userName,
+  }) async {
+    if (roomID.isEmpty || userID.isEmpty) return;
+    final cleanName = userName.trim().isEmpty ? 'User' : userName.trim();
+    try {
+      await fireStore
+          .collection(FirebaseKeys.allRoomsCollection)
+          .doc(roomID)
+          .update({'${FirebaseKeys.roomMembersField}.$userID': cleanName});
+    } on FirebaseException {
+      // Ignore if room is being deleted or user has no permission yet
+    }
+  }
+
+  @override
+  Future<void> leaveRoomPresence({
+    required String roomID,
+    required String userID,
+  }) async {
+    if (roomID.isEmpty || userID.isEmpty) return;
+    try {
+      await fireStore
+          .collection(FirebaseKeys.allRoomsCollection)
+          .doc(roomID)
+          .update({
+            '${FirebaseKeys.roomMembersField}.$userID': FieldValue.delete(),
+          });
+    } on FirebaseException {
+      // Ignore if room was already deleted
+    }
+  }
+
+  @override
   Stream<List<MessageModel>> getMessages(String roomID) {
     final messageRef = fireStore
         .collection(FirebaseKeys.allRoomsCollection)

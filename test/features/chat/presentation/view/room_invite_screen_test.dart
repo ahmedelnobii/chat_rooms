@@ -99,6 +99,22 @@ class _FakeChatRepo implements ChatRepo {
   Future<Either<Failer, RoomModel>> getRoom(String roomID) async => Right(room);
 
   @override
+  Stream<RoomModel> watchRoom(String roomID) => Stream.value(room);
+
+  @override
+  Future<Either<Failer, void>> joinRoomPresence({
+    required String roomID,
+    required String userID,
+    required String userName,
+  }) async => const Right(null);
+
+  @override
+  Future<Either<Failer, void>> leaveRoomPresence({
+    required String roomID,
+    required String userID,
+  }) async => const Right(null);
+
+  @override
   Stream<List<MessageModel>> getMessages(String roomID) => const Stream.empty();
 
   @override

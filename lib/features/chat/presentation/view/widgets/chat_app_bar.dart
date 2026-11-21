@@ -6,6 +6,7 @@ import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_state.dart';
 import 'package:chat_rooms/features/chat/presentation/view/widgets/lively_chat_buttons.dart';
+import 'package:chat_rooms/features/chat/presentation/view/widgets/room_info_bottom_sheet.dart';
 import 'package:chat_rooms/features/liked/presentation/cubit/liked_cubit.dart';
 import 'package:chat_rooms/features/liked/presentation/cubit/liked_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -145,26 +146,62 @@ class _ChatAppBarTitle extends StatelessWidget {
           );
         }
 
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              room.roomName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.white, fontSize: 16.sp),
-            ),
-            Text(
-              room.description,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.normal,
+        final memberCount = room.members.length;
+        final memberLabel = memberCount == 1
+            ? '1 member'
+            : '$memberCount members';
+
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => RoomInfoBottomSheet.show(context),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                room.roomName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white, fontSize: 15.sp),
               ),
-            ),
-          ],
+              Text(
+                room.description,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 6.r,
+                    height: 6.r,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF2ECC71),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  SizedBox(width: 4.w),
+                  Flexible(
+                    child: Text(
+                      memberLabel,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );

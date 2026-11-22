@@ -1,3 +1,4 @@
+import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/auth/presentation/view/login_screen.dart';
 import 'package:chat_rooms/features/auth/presentation/view/register_screen.dart';
@@ -60,9 +61,12 @@ final routers = GoRouter(
       path: "${AppRouts.chatScreen}/:id",
       pageBuilder: (context, state) {
         final String roomID = state.pathParameters["id"] as String;
+        final initialRoom = state.extra is RoomModel
+            ? state.extra as RoomModel
+            : null;
         return CustomTransitionPage<void>(
           key: state.pageKey,
-          child: ChatScreen(roomID),
+          child: ChatScreen(roomID, initialRoom: initialRoom),
           transitionDuration: const Duration(milliseconds: 100),
           reverseTransitionDuration: const Duration(milliseconds: 100),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {

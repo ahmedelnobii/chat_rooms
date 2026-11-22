@@ -37,6 +37,7 @@ class LikedRoomWidget extends StatelessWidget {
           context,
           roomID: room.roomID ?? '',
           isPrivate: room.isPrivate,
+          room: room,
         ),
         leading: CircleAvatar(
           backgroundColor: AppColors.primiary.withValues(alpha: 0.1),

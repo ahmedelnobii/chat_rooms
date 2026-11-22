@@ -159,6 +159,7 @@ class SelectedTab extends StatelessWidget {
                       roomName: room.roomName,
                       roomDescription: room.description,
                       isPrivate: room.isPrivate,
+                      room: room,
                       onDelete: isCreator && !state.isDeletingRoom
                           ? () => _confirmDeleteRoom(context, room)
                           : null,

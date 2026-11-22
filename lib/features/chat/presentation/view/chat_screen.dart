@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chat_rooms/core/consts/app_colors.dart';
 import 'package:chat_rooms/core/di/get_it.dart';
+import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:chat_rooms/features/chat/presentation/view/widgets/chat_app_bar.dart';
@@ -16,7 +17,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatScreen extends StatefulWidget {
   final String roomID;
-  const ChatScreen(this.roomID, {super.key});
+  final RoomModel? initialRoom;
+
+  const ChatScreen(this.roomID, {super.key, this.initialRoom});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -127,7 +130,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         child: Column(
                           children: [
-                            ChatAppBar(roomID: widget.roomID),
+                            ChatAppBar(
+                              roomID: widget.roomID,
+                              initialRoom: widget.initialRoom,
+                            ),
                             Expanded(
                               child: ChatMessagesList(roomID: widget.roomID),
                             ),

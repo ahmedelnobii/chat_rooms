@@ -55,6 +55,7 @@ class _RoomInviteContentState extends State<_RoomInviteContent> {
       context,
       roomID: widget.roomID,
       isPrivate: room.isPrivate,
+      room: room,
       replaceCurrentRoute: true,
     );
 

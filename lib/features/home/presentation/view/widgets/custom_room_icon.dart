@@ -1,4 +1,5 @@
 import 'package:chat_rooms/core/consts/app_images.dart';
+import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/core/widgets/custom_button.dart';
 import 'package:chat_rooms/features/home/presentation/view/widgets/join_room.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class CustomRoomIcon extends StatelessWidget {
   final String roomDescription;
   final String roomID;
   final bool isPrivate;
+  final RoomModel? room;
   final VoidCallback? onDelete;
 
   const CustomRoomIcon({
@@ -18,6 +20,7 @@ class CustomRoomIcon extends StatelessWidget {
     required this.roomName,
     required this.roomDescription,
     required this.isPrivate,
+    this.room,
     this.onDelete,
   });
 
@@ -101,8 +104,12 @@ class CustomRoomIcon extends StatelessWidget {
                 SizedBox(height: 5.h),
                 CustomButton(
                   text: "Join",
-                  onPressed: () =>
-                      joinRoom(context, roomID: roomID, isPrivate: isPrivate),
+                  onPressed: () => joinRoom(
+                    context,
+                    roomID: roomID,
+                    isPrivate: isPrivate,
+                    room: room,
+                  ),
                   fontsize: 16,
                   weight: FontWeight.w400,
                   padding: 4,

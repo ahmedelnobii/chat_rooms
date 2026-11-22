@@ -20,8 +20,9 @@ import 'package:shimmer/shimmer.dart';
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String roomID;
+  final RoomModel? initialRoom;
 
-  const ChatAppBar({super.key, required this.roomID});
+  const ChatAppBar({super.key, required this.roomID, this.initialRoom});
 
   @override
   Size get preferredSize => Size.fromHeight(68.h);
@@ -88,7 +89,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      title: const _ChatAppBarTitle(),
+      title: _ChatAppBarTitle(initialRoom: initialRoom),
       backgroundColor: AppColors.primiary.withValues(alpha: .6),
       centerTitle: true,
       actions: [
@@ -107,14 +108,18 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _ChatAppBarTitle extends StatelessWidget {
-  const _ChatAppBarTitle();
+  final RoomModel? initialRoom;
+
+  const _ChatAppBarTitle({this.initialRoom});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChatCubit, ChatState>(
       builder: (context, state) {
-        final room = context.read<ChatCubit>().room;
-        if (room == null) {
+        final liveRoom = context.read<ChatCubit>().room;
+        final displayRoom = liveRoom ?? initialRoom;
+
+        if (displayRoom == null) {
           if (state is GetRoomError) {
             return const Text('Room unavailable');
           }
@@ -146,25 +151,29 @@ class _ChatAppBarTitle extends StatelessWidget {
           );
         }
 
-        final memberCount = room.members.length;
-        final memberLabel = memberCount == 1
+        final memberCount = liveRoom?.members.length;
+        final memberLabel = memberCount == null
+            ? null
+            : memberCount == 1
             ? '1 member'
             : '$memberCount members';
 
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => RoomInfoBottomSheet.show(context),
+          onTap: liveRoom == null
+              ? null
+              : () => RoomInfoBottomSheet.show(context),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                room.roomName,
+                displayRoom.roomName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: Colors.white, fontSize: 15.sp),
               ),
               Text(
-                room.description,
+                displayRoom.description,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -174,32 +183,46 @@ class _ChatAppBarTitle extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2.h),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 6.r,
-                    height: 6.r,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF2ECC71),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  SizedBox(width: 4.w),
-                  Flexible(
-                    child: Text(
-                      memberLabel,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w500,
+              if (memberLabel != null)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6.r,
+                      height: 6.r,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF2ECC71),
+                        shape: BoxShape.circle,
                       ),
                     ),
+                    SizedBox(width: 4.w),
+                    Flexible(
+                      child: Text(
+                        memberLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              else
+                Shimmer.fromColors(
+                  baseColor: Colors.white30,
+                  highlightColor: Colors.white,
+                  child: Container(
+                    height: 10.h,
+                    width: 64.w,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4.r),
+                    ),
                   ),
-                ],
-              ),
+                ),
             ],
           ),
         );

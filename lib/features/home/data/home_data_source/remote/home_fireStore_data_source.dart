@@ -11,7 +11,10 @@ class HomeFirestoreDataSource implements HomeRemoteDataSource {
 
   @override
   Stream<List<RoomModel>> getAllRooms() {
-    return _roomsFrom(firestore.collection(FirebaseKeys.allRoomsCollection));
+    return _roomsFrom(
+      firestore.collection(FirebaseKeys.allRoomsCollection),
+      sortByOnlineMembers: true,
+    );
   }
 
   @override
@@ -111,16 +114,29 @@ class HomeFirestoreDataSource implements HomeRemoteDataSource {
     }
   }
 
-  Stream<List<RoomModel>> _roomsFrom(Query<Map<String, dynamic>> query) {
-    return query.snapshots().map(
-      (snapshot) => snapshot.docs
+  Stream<List<RoomModel>> _roomsFrom(
+    Query<Map<String, dynamic>> query, {
+    bool sortByOnlineMembers = false,
+  }) {
+    return query.snapshots().map((snapshot) {
+      final rooms = snapshot.docs
           .map(
             (document) => RoomModel.fromJson({
               ...document.data(),
               FirebaseKeys.roomIDField: document.id,
             }),
           )
-          .toList(growable: false),
-    );
+          .toList();
+
+      if (sortByOnlineMembers) {
+        rooms.sort((a, b) {
+          final byMembers = b.members.length.compareTo(a.members.length);
+          if (byMembers != 0) return byMembers;
+          return b.createdAt.compareTo(a.createdAt);
+        });
+      }
+
+      return List.unmodifiable(rooms);
+    });
   }
 }

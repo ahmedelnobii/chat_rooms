@@ -50,11 +50,26 @@ class ChatFireStoreDataSource implements ChatRemoteDataSource {
   }) async {
     if (roomID.isEmpty || userID.isEmpty) return;
     final cleanName = userName.trim().isEmpty ? 'User' : userName.trim();
+    final roomRef = fireStore
+        .collection(FirebaseKeys.allRoomsCollection)
+        .doc(roomID);
     try {
-      await fireStore
-          .collection(FirebaseKeys.allRoomsCollection)
-          .doc(roomID)
-          .update({'${FirebaseKeys.roomMembersField}.$userID': cleanName});
+      await fireStore.runTransaction((transaction) async {
+        final snapshot = await transaction.get(roomRef);
+        final data = snapshot.data();
+        if (!snapshot.exists || data == null) return;
+
+        final rawMembers = data[FirebaseKeys.roomMembersField];
+        final members = rawMembers is Map
+            ? Map<String, dynamic>.from(rawMembers)
+            : <String, dynamic>{};
+        members[userID] = cleanName;
+
+        transaction.update(roomRef, {
+          '${FirebaseKeys.roomMembersField}.$userID': cleanName,
+          FirebaseKeys.roomMembersCountField: members.length,
+        });
+      });
     } on FirebaseException {
       // Ignore if room is being deleted or user has no permission yet
     }
@@ -66,13 +81,26 @@ class ChatFireStoreDataSource implements ChatRemoteDataSource {
     required String userID,
   }) async {
     if (roomID.isEmpty || userID.isEmpty) return;
+    final roomRef = fireStore
+        .collection(FirebaseKeys.allRoomsCollection)
+        .doc(roomID);
     try {
-      await fireStore
-          .collection(FirebaseKeys.allRoomsCollection)
-          .doc(roomID)
-          .update({
-            '${FirebaseKeys.roomMembersField}.$userID': FieldValue.delete(),
-          });
+      await fireStore.runTransaction((transaction) async {
+        final snapshot = await transaction.get(roomRef);
+        final data = snapshot.data();
+        if (!snapshot.exists || data == null) return;
+
+        final rawMembers = data[FirebaseKeys.roomMembersField];
+        final members = rawMembers is Map
+            ? Map<String, dynamic>.from(rawMembers)
+            : <String, dynamic>{};
+        members.remove(userID);
+
+        transaction.update(roomRef, {
+          '${FirebaseKeys.roomMembersField}.$userID': FieldValue.delete(),
+          FirebaseKeys.roomMembersCountField: members.length,
+        });
+      });
     } on FirebaseException {
       // Ignore if room was already deleted
     }

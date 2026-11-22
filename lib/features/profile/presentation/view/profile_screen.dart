@@ -6,6 +6,7 @@ import 'package:chat_rooms/features/profile/presentation/cubit/profile_state.dar
 import 'package:chat_rooms/features/update_profile/presentation/view/widgets/reauth_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -137,13 +138,48 @@ class _ProfileContent extends StatelessWidget {
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       ),
                       SizedBox(height: 8.h),
-                      SelectableText(
-                        'ID: ${profile!.userID}',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.grey.shade700,
-                          fontSize: 12.sp,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: SelectableText(
+                              'ID: ${profile!.userID}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.grey.shade700,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 4.w),
+                          IconButton(
+                            tooltip: 'Copy ID',
+                            visualDensity: VisualDensity.compact,
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(
+                              minWidth: 28.r,
+                              minHeight: 28.r,
+                            ),
+                            icon: Icon(
+                              Icons.copy_rounded,
+                              size: 16.r,
+                              color: AppColors.primiary,
+                            ),
+                            onPressed: () async {
+                              await Clipboard.setData(
+                                ClipboardData(text: profile!.userID),
+                              );
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('ID copied to clipboard'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

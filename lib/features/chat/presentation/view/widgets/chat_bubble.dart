@@ -1,6 +1,7 @@
 import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_rooms/features/chat/data/models/message_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,10 +13,14 @@ class ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFromSender =
         messageModel.senderID == context.read<AuthCubit>().cuurentUser?.userID;
+    final formattedTime = MaterialLocalizations.of(
+      context,
+    ).formatTimeOfDay(TimeOfDay.fromDateTime(messageModel.createdAt.toLocal()));
+
     return Align(
       alignment: isFromSender ? Alignment.centerRight : Alignment.centerLeft,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
         child: Column(
           crossAxisAlignment: isFromSender
               ? CrossAxisAlignment.end
@@ -28,37 +33,64 @@ class ChatBubble extends StatelessWidget {
                 color: isFromSender ? Colors.blue : Colors.grey,
               ),
             ),
-            Container(
-              padding: const EdgeInsets.all(12),
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              decoration: BoxDecoration(
-                color: isFromSender ? Colors.blue : Colors.grey[300],
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Flexible(
-                    child: Text(
-                      messageModel.content,
-                      style: TextStyle(
-                        color: isFromSender ? Colors.white : Colors.black,
+            GestureDetector(
+              onLongPress: () async {
+                HapticFeedback.lightImpact();
+                await Clipboard.setData(
+                  ClipboardData(text: messageModel.content),
+                );
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    const SnackBar(
+                      content: Text('Message copied'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(top: 4, bottom: 2),
+                decoration: BoxDecoration(
+                  color: isFromSender ? Colors.blue : Colors.grey[300],
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        messageModel.content,
+                        style: TextStyle(
+                          color: isFromSender ? Colors.white : Colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                  if (isFromSender) ...[
-                    SizedBox(width: 6.w),
-                    Tooltip(
-                      message: messageModel.isPending ? 'Sending' : 'Sent',
-                      child: Icon(
-                        messageModel.isPending ? Icons.schedule : Icons.done,
-                        size: 14.sp,
-                        color: Colors.white70,
+                    if (isFromSender) ...[
+                      SizedBox(width: 6.w),
+                      Tooltip(
+                        message: messageModel.isPending ? 'Sending' : 'Sent',
+                        child: Icon(
+                          messageModel.isPending ? Icons.schedule : Icons.done,
+                          size: 14.sp,
+                          color: Colors.white70,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
-                ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Text(
+                formattedTime,
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  color: Colors.grey.shade600,
+                ),
               ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:chat_rooms/core/di/get_it.dart';
+import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/home/presentation/cubit/home_cubit.dart';
 import 'package:chat_rooms/features/home/presentation/view/widgets/custom_app_bar_item.dart';
 import 'package:chat_rooms/features/home/presentation/view/widgets/pinned_tab_bar_delegate.dart';
@@ -6,6 +7,7 @@ import 'package:chat_rooms/features/home/presentation/view/widgets/selected_tab.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: const Text('Chat Club'),
                   actions: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () => context.push(AppRouts.searchScreen),
                       icon: const Icon(Icons.search),
                     ),
                     IconButton(

@@ -1,10 +1,10 @@
 import 'package:chat_rooms/core/models/room_model.dart';
+import 'package:chat_rooms/core/widgets/custom_room_icon.dart';
 import 'package:chat_rooms/core/widgets/delete_room_dialog.dart';
+import 'package:chat_rooms/core/widgets/room_card_shimmer.dart';
 import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_rooms/features/home/presentation/cubit/home_cubit.dart';
 import 'package:chat_rooms/features/home/presentation/cubit/home_state.dart';
-import 'package:chat_rooms/features/home/presentation/view/widgets/custom_room_icon.dart';
-import 'package:chat_rooms/features/home/presentation/view/widgets/room_card_shimmer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

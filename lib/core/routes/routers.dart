@@ -10,6 +10,7 @@ import 'package:chat_rooms/features/liked/presentation/view/liked_screen.dart';
 import 'package:chat_rooms/features/main/main_screen.dart';
 import 'package:chat_rooms/features/auth/data/model/user_model.dart';
 import 'package:chat_rooms/features/profile/presentation/view/profile_screen.dart';
+import 'package:chat_rooms/features/search/presentation/view/search_screen.dart';
 import 'package:chat_rooms/features/update_profile/presentation/view/update_profile_screen.dart';
 import 'package:chat_rooms/features/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -77,6 +78,20 @@ final routers = GoRouter(
               ).animate(animation),
               child: child,
             );
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRouts.searchScreen,
+      pageBuilder: (context, state) {
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: const SearchScreen(),
+          transitionDuration: const Duration(milliseconds: 300),
+          reverseTransitionDuration: const Duration(milliseconds: 300),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
           },
         );
       },

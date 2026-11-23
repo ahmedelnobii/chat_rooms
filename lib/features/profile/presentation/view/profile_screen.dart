@@ -1,16 +1,10 @@
 import 'package:chat_rooms/core/consts/app_colors.dart';
-import 'package:chat_rooms/core/routes/app_routs.dart';
-import 'package:chat_rooms/features/auth/data/model/user_model.dart';
 import 'package:chat_rooms/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:chat_rooms/features/profile/presentation/cubit/profile_state.dart';
-import 'package:chat_rooms/features/update_profile/presentation/view/widgets/reauth_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat_rooms/features/profile/presentation/view/widgets/profile_content.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -25,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
           child: BlocBuilder<ProfileCubit, ProfileState>(
             builder: (context, state) {
               if (state.isLoading && state.profile == null) {
-                return const _ProfileContent(profile: null);
+                return const ProfileContent(profile: null);
               }
 
               if (state.error != null && state.profile == null) {
@@ -56,238 +50,9 @@ class ProfileScreen extends StatelessWidget {
                 );
               }
 
-              return _ProfileContent(profile: profile);
+              return ProfileContent(profile: profile);
             },
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ProfileContent extends StatelessWidget {
-  final UserModel? profile;
-
-  const _ProfileContent({required this.profile});
-
-  Future<void> _onEditProfileTap(BuildContext context) async {
-    final currentProfile = profile;
-    if (currentProfile == null) return;
-
-    final verified = await ReauthDialog.show(
-      context,
-      initialEmail: currentProfile.email,
-    );
-    if (verified != true || !context.mounted) return;
-
-    final updatedUser = await context.push<UserModel?>(
-      AppRouts.updateProfileScreen,
-      extra: currentProfile,
-    );
-    if (updatedUser != null && context.mounted) {
-      context.read<ProfileCubit>().setProfile(updatedUser);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(height: 34.h),
-          Container(
-            padding: EdgeInsets.all(16.r),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: profile == null
-                ? const _ProfileInfoShimmer()
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      CircleAvatar(
-                        radius: 55.r,
-                        child: Text(
-                          profile!.name.trim().isEmpty
-                              ? '?'
-                              : profile!.name[0].toUpperCase(),
-                          style: TextStyle(fontSize: 40.sp),
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                      Text(
-                        profile!.name,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        profile!.email,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey, fontSize: 16.sp),
-                      ),
-                      SizedBox(height: 8.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: SelectableText(
-                              'ID: ${profile!.userID}',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.grey.shade700,
-                                fontSize: 12.sp,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 4.w),
-                          IconButton(
-                            tooltip: 'Copy ID',
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: BoxConstraints(
-                              minWidth: 28.r,
-                              minHeight: 28.r,
-                            ),
-                            icon: Icon(
-                              Icons.copy_rounded,
-                              size: 16.r,
-                              color: AppColors.primiary,
-                            ),
-                            onPressed: () async {
-                              await Clipboard.setData(
-                                ClipboardData(text: profile!.userID),
-                              );
-                              if (!context.mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('ID copied to clipboard'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-          ),
-          SizedBox(height: 20.h),
-          Text(
-            'Account',
-            style: TextStyle(fontSize: 16.sp, color: Colors.blueGrey),
-          ),
-          SizedBox(height: 10.h),
-          Container(
-            padding: EdgeInsets.all(4.r),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24.r),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(20.r),
-                  onTap: profile == null
-                      ? null
-                      : () => _onEditProfileTap(context),
-                  child: const ListTile(
-                    leading: Icon(
-                      Icons.edit_outlined,
-                      color: AppColors.primiary,
-                    ),
-                    title: Text(
-                      'Edit profile',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    trailing: Icon(Icons.arrow_forward_ios, size: 18),
-                  ),
-                ),
-                Divider(height: 1, indent: 16.w, endIndent: 16.w),
-                InkWell(
-                  borderRadius: BorderRadius.circular(20.r),
-                  onTap: () {
-                    FirebaseAuth.instance.signOut();
-                    context.go(AppRouts.loginScreen);
-                  },
-                  child: const ListTile(
-                    leading: Icon(Icons.logout, color: Colors.red),
-                    title: Text(
-                      'Sign out',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    trailing: Icon(Icons.arrow_forward_ios, size: 18),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (MediaQuery.sizeOf(context).height < 500) SizedBox(height: 120.h),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProfileInfoShimmer extends StatelessWidget {
-  const _ProfileInfoShimmer();
-
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
-      child: Column(
-        children: [
-          Container(
-            width: 110.r,
-            height: 110.r,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-          ),
-          SizedBox(height: 12.h),
-          _line(width: 150.w, height: 24.h),
-          SizedBox(height: 8.h),
-          _line(width: 180.w, height: 16.h),
-          SizedBox(height: 16.h),
-          _line(width: 120.w, height: 12.h),
-        ],
-      ),
-    );
-  }
-
-  Widget _line({required double width, required double height}) {
-    return Center(
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
         ),
       ),
     );

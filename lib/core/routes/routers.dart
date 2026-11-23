@@ -1,8 +1,8 @@
 import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/core/routes/app_routs.dart';
-import 'package:chat_rooms/features/auth/presentation/view/forget_password_screen.dart';
-import 'package:chat_rooms/features/auth/presentation/view/login_screen.dart';
-import 'package:chat_rooms/features/auth/presentation/view/register_screen.dart';
+import 'package:chat_rooms/features/auth/presentation/view/screens/forget_password_screen.dart';
+import 'package:chat_rooms/features/auth/presentation/view/screens/login_screen.dart';
+import 'package:chat_rooms/features/auth/presentation/view/screens/register_screen.dart';
 import 'package:chat_rooms/features/chat/presentation/view/chat_screen.dart';
 import 'package:chat_rooms/features/chat/presentation/view/room_invite_screen.dart';
 import 'package:chat_rooms/features/create_room/presentation/view/create_room_screen.dart';

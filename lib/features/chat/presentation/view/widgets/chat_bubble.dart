@@ -13,9 +13,13 @@ class ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFromSender =
         messageModel.senderID == context.read<AuthCubit>().cuurentUser?.userID;
-    final formattedTime = MaterialLocalizations.of(
-      context,
-    ).formatTimeOfDay(TimeOfDay.fromDateTime(messageModel.createdAt.toLocal()));
+    final localCreatedAt = messageModel.createdAt.toLocal();
+    final localizations = MaterialLocalizations.of(context);
+    final formattedDate = localizations.formatShortDate(localCreatedAt);
+    final formattedTime = localizations.formatTimeOfDay(
+      TimeOfDay.fromDateTime(localCreatedAt),
+    );
+    final formattedDateTime = '$formattedDate • $formattedTime';
 
     return Align(
       alignment: isFromSender ? Alignment.centerRight : Alignment.centerLeft,
@@ -86,7 +90,7 @@ class ChatBubble extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.w),
               child: Text(
-                formattedTime,
+                formattedDateTime,
                 style: TextStyle(
                   fontSize: 10.sp,
                   color: Colors.grey.shade600,

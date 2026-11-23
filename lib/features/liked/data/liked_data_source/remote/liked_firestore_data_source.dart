@@ -24,27 +24,11 @@ class LikedFirestoreDataSource implements LikedRemoteDataSource {
   @override
   Stream<List<RoomModel>> getLikedRooms() {
     try {
-      return _userLikesCollection().snapshots().asyncMap((snapshot) async {
-        final validRooms = <RoomModel>[];
-        for (final document in snapshot.docs) {
-          final roomID = document.id;
-          final roomSnapshot = await firestore
-              .collection(FirebaseKeys.allRoomsCollection)
-              .doc(roomID)
-              .get();
-
-          if (!roomSnapshot.exists) {
-            // Room was deleted by its creator; clean up stale like
-            try {
-              await document.reference.delete();
-            } catch (_) {}
-            continue;
-          }
-
-          validRooms.add(RoomModel.fromJson(document.data()));
-        }
-        return List.unmodifiable(validRooms);
-      });
+      return _userLikesCollection().snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((document) => RoomModel.fromJson(document.data()))
+            .toList(growable: false),
+      );
     } catch (error) {
       return Stream.error(error);
     }

@@ -95,6 +95,7 @@ class HomeFirestoreDataSource implements HomeRemoteDataSource {
       try {
         final likedDocs = await firestore
             .collectionGroup(FirebaseKeys.userLikesSubCollection)
+            .where(FirebaseKeys.roomCreatorIDField, isEqualTo: currentUserId)
             .where(FirebaseKeys.roomIDField, isEqualTo: roomID)
             .get();
         if (likedDocs.docs.isNotEmpty) {

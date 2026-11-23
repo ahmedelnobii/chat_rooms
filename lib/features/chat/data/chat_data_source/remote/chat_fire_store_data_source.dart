@@ -185,6 +185,7 @@ class ChatFireStoreDataSource implements ChatRemoteDataSource {
       try {
         final likedDocs = await fireStore
             .collectionGroup(FirebaseKeys.userLikesSubCollection)
+            .where(FirebaseKeys.roomCreatorIDField, isEqualTo: currentUserId)
             .where(FirebaseKeys.roomIDField, isEqualTo: roomID)
             .get();
         if (likedDocs.docs.isNotEmpty) {

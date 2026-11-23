@@ -48,6 +48,10 @@ service cloud.firestore {
       }
     }
 
+    match /{path=**}/userLikes/{roomID} {
+      allow read, delete: if signedIn() && resource.data.roomCreatorID == request.auth.uid;
+    }
+
     match /allRooms/{roomID} {
       allow read: if signedIn();
       allow create: if signedIn() && validPublicRoomCreate(roomID);

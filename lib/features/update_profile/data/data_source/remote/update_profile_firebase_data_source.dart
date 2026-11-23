@@ -275,9 +275,11 @@ class UpdateProfileFirebaseDataSource implements UpdateProfileRemoteDataSource {
         .get();
     await _deleteInBatches(messages.docs.map((d) => d.reference).toList());
 
+    final currentUserId = firebaseAuth.currentUser?.uid;
     try {
       final likedDocs = await firestore
           .collectionGroup(FirebaseKeys.userLikesSubCollection)
+          .where(FirebaseKeys.roomCreatorIDField, isEqualTo: currentUserId)
           .where(FirebaseKeys.roomIDField, isEqualTo: roomRef.id)
           .get();
       await _deleteInBatches(likedDocs.docs.map((d) => d.reference).toList());

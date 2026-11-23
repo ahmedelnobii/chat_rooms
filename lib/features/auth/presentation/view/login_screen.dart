@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         InkWell(
                           onTap: () {
-                            // Handle forget password logic here
+                            context.push(AppRouts.forgetPasswordScreen);
                           },
                           child: Text(
                             textAlign: TextAlign.right,

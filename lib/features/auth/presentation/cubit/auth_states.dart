@@ -46,3 +46,12 @@ class GoogleSignInErrorState extends AuthStates {
   final String error;
   GoogleSignInErrorState(this.error);
 }
+
+class ResetPasswordLoadingState extends AuthStates {}
+
+class ResetPasswordSuccessState extends AuthStates {}
+
+class ResetPasswordErrorState extends AuthStates {
+  final String error;
+  ResetPasswordErrorState(this.error);
+}

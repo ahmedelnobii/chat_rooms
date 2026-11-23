@@ -210,4 +210,8 @@ class _FakeAuthRepo implements AuthRepo {
     String password,
     String name,
   ) async => const Right(null);
+
+  @override
+  Future<Either<Failer, void>> resetPassword(String email) async =>
+      const Right(null);
 }

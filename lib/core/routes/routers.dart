@@ -1,5 +1,6 @@
 import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/core/routes/app_routs.dart';
+import 'package:chat_rooms/features/auth/presentation/view/forget_password_screen.dart';
 import 'package:chat_rooms/features/auth/presentation/view/login_screen.dart';
 import 'package:chat_rooms/features/auth/presentation/view/register_screen.dart';
 import 'package:chat_rooms/features/chat/presentation/view/chat_screen.dart';
@@ -45,6 +46,20 @@ final routers = GoRouter(
           child: RegisterScreen(),
           transitionDuration: const Duration(milliseconds: 400),
           reverseTransitionDuration: const Duration(milliseconds: 400),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRouts.forgetPasswordScreen,
+      pageBuilder: (context, state) {
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: const ForgetPasswordScreen(),
+          transitionDuration: const Duration(milliseconds: 300),
+          reverseTransitionDuration: const Duration(milliseconds: 300),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },

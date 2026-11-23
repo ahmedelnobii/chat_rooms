@@ -13,4 +13,6 @@ abstract class RemoteAuthDataSource {
 
   /// Returns the currently persisted Firebase session user, or null if none.
   Future<UserModel?> getCurrentUser();
+
+  Future<void> resetPassword(String email);
 }

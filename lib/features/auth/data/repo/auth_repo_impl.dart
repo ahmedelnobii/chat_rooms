@@ -64,4 +64,14 @@ class AuthRepoImpl implements AuthRepo {
       return Left(Failer(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failer, void>> resetPassword(String email) async {
+    try {
+      await remoteAuthDataSource.resetPassword(email);
+      return const Right(null);
+    } catch (e) {
+      return Left(Failer(e.toString().replaceAll('Exception: ', '')));
+    }
+  }
 }

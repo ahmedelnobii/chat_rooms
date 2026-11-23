@@ -18,4 +18,6 @@ abstract class AuthRepo {
 
   /// Checks if a Firebase session is still active and returns the user.
   Future<Either<Failer, UserModel?>> getCurrentUser();
+
+  Future<Either<Failer, void>> resetPassword(String email);
 }

@@ -78,6 +78,26 @@ class FireBaseAuthDataSource implements RemoteAuthDataSource {
   }
 
   @override
+  Future<void> resetPassword(String email) async {
+    try {
+      await firebaseAuth.sendPasswordResetEmail(email: email.trim());
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-email':
+          throw Exception('Please enter a valid email address.');
+        case 'user-not-found':
+          throw Exception('No account found with this email address.');
+        case 'too-many-requests':
+          throw Exception('Too many requests. Please try again later.');
+        default:
+          throw Exception(e.message ?? 'Failed to send password reset email.');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
   Future<UserModel> continueWithGoogle() async {
     try {
       final googleSignIn = GoogleSignIn.instance;

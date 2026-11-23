@@ -1,7 +1,9 @@
+import 'package:chat_rooms/core/errors/failer.dart';
 import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/features/home/data/repo/home_repo.dart';
 import 'package:chat_rooms/features/home/presentation/cubit/room_password_cubit.dart';
 import 'package:chat_rooms/features/home/presentation/view/widgets/room_password_dialog.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -78,10 +80,14 @@ class _FakeHomeRepo implements HomeRepo {
   Stream<List<RoomModel>> getMyRooms() => const Stream.empty();
 
   @override
-  Future<bool> verifyRoomPassword(String roomID, String password) {
-    return verify(roomID, password);
+  Future<Either<Failer, bool>> verifyRoomPassword(
+    String roomID,
+    String password,
+  ) async {
+    return Right(await verify(roomID, password));
   }
 
   @override
-  Future<void> deleteRoom(String roomID) async {}
+  Future<Either<Failer, void>> deleteRoom(String roomID) async =>
+      const Right(null);
 }

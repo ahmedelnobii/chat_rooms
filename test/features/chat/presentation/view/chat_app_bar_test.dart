@@ -178,13 +178,15 @@ class _FakeChatRepo implements ChatRepo {
 
 class _FakeLikedRepo implements LikedRepo {
   @override
-  Future<void> addLikedRoom(RoomModel room) async {}
+  Future<Either<Failer, void>> addLikedRoom(RoomModel room) async =>
+      const Right(null);
 
   @override
   Stream<List<RoomModel>> getLikedRooms() => const Stream.empty();
 
   @override
-  Future<void> removeLikedRoom(String roomID) async {}
+  Future<Either<Failer, void>> removeLikedRoom(String roomID) async =>
+      const Right(null);
 }
 
 class _FakeAuthRepo implements AuthRepo {

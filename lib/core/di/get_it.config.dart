@@ -37,7 +37,7 @@ import 'package:chat_rooms/features/create_room/data/repo/create_room_repo_impl.
     as _i198;
 import 'package:chat_rooms/features/create_room/presentation/cubit/create_room_cubit.dart'
     as _i623;
-import 'package:chat_rooms/features/home/data/home_data_source/remote/home_fireStore_data_source.dart'
+import 'package:chat_rooms/features/home/data/home_data_source/remote/home_firestore_data_source.dart'
     as _i213;
 import 'package:chat_rooms/features/home/data/home_data_source/remote/home_remote_data_source.dart'
     as _i430;

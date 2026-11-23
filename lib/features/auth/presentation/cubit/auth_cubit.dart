@@ -11,6 +11,9 @@ class AuthCubit extends Cubit<AuthStates> {
 
   UserModel? cuurentUser;
 
+  UserModel? get currentUser => cuurentUser;
+  set currentUser(UserModel? user) => cuurentUser = user;
+
   Future<void> login({required String email, required String password}) async {
     emit(LoginLoadingState());
     final res = await authRepository.signInWithEmailAndPassword(

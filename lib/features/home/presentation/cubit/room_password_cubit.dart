@@ -21,19 +21,18 @@ class RoomPasswordCubit extends Cubit<RoomPasswordState> {
 
     emit(const RoomPasswordLoading());
 
-    try {
-      final isValid = await _homeRepo.verifyRoomPassword(roomID, password);
-      if (isValid) {
-        emit(const RoomPasswordSuccess());
-      } else {
-        emit(const RoomPasswordInitial(message: 'Incorrect room password.'));
-      }
-    } catch (error) {
-      emit(
-        RoomPasswordInitial(
-          message: error.toString().replaceFirst('Exception: ', ''),
-        ),
-      );
-    }
+    final result = await _homeRepo.verifyRoomPassword(roomID, password);
+    if (isClosed) return;
+
+    result.fold(
+      (failure) => emit(RoomPasswordInitial(message: failure.message)),
+      (isValid) {
+        if (isValid) {
+          emit(const RoomPasswordSuccess());
+        } else {
+          emit(const RoomPasswordInitial(message: 'Incorrect room password.'));
+        }
+      },
+    );
   }
 }

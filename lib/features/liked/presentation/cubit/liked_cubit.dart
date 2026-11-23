@@ -50,21 +50,16 @@ class LikedCubit extends Cubit<LikedState> {
     final shouldUnlike = state.containsRoom(roomID);
     emit(state.copyWith(isUpdating: true, clearError: true));
 
-    try {
-      if (shouldUnlike) {
-        await _likedRepo.removeLikedRoom(roomID);
-      } else {
-        await _likedRepo.addLikedRoom(room);
-      }
+    final result = shouldUnlike
+        ? await _likedRepo.removeLikedRoom(roomID)
+        : await _likedRepo.addLikedRoom(room);
 
-      if (!isClosed) {
-        emit(state.copyWith(isUpdating: false));
-      }
-    } catch (error) {
-      if (!isClosed) {
-        emit(state.copyWith(isUpdating: false, error: _errorMessage(error)));
-      }
-    }
+    if (isClosed) return;
+    result.fold(
+      (failure) =>
+          emit(state.copyWith(isUpdating: false, error: failure.message)),
+      (_) => emit(state.copyWith(isUpdating: false)),
+    );
   }
 
   String _errorMessage(Object error) {

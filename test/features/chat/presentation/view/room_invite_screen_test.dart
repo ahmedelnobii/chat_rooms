@@ -134,8 +134,12 @@ class _FakeHomeRepo implements HomeRepo {
   Stream<List<RoomModel>> getMyRooms() => const Stream.empty();
 
   @override
-  Future<bool> verifyRoomPassword(String roomID, String password) async => true;
+  Future<Either<Failer, bool>> verifyRoomPassword(
+    String roomID,
+    String password,
+  ) async => const Right(true);
 
   @override
-  Future<void> deleteRoom(String roomID) async {}
+  Future<Either<Failer, void>> deleteRoom(String roomID) async =>
+      const Right(null);
 }

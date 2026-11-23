@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:chat_rooms/core/errors/failer.dart';
 import 'package:chat_rooms/core/models/room_model.dart';
 import 'package:chat_rooms/features/liked/data/repo/liked_repo.dart';
 import 'package:chat_rooms/features/liked/presentation/cubit/liked_cubit.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -76,15 +78,17 @@ class _FakeLikedRepo implements LikedRepo {
   Stream<List<RoomModel>> getLikedRooms() => _likedRooms.stream;
 
   @override
-  Future<void> addLikedRoom(RoomModel room) async {
+  Future<Either<Failer, void>> addLikedRoom(RoomModel room) async {
     _rooms.add(room);
     _likedRooms.add(List.unmodifiable(_rooms));
+    return const Right(null);
   }
 
   @override
-  Future<void> removeLikedRoom(String roomID) async {
+  Future<Either<Failer, void>> removeLikedRoom(String roomID) async {
     _rooms.removeWhere((room) => room.roomID == roomID);
     _likedRooms.add(List.unmodifiable(_rooms));
+    return const Right(null);
   }
 
   Future<void> close() => _likedRooms.close();

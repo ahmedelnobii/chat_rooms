@@ -13,7 +13,7 @@ class CreateRoomRepoImpl implements CreateRoomRepo {
   Future<Either<Failer, void>> createRoom(RoomModel room) async {
     try {
       await _createRoomRemoteDataSource.createRoom(room);
-      return Right(Unit);
+      return const Right(null);
     } catch (e) {
       return Left(Failer(e.toString()));
     }

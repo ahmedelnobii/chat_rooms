@@ -16,12 +16,7 @@ class CreateRoomFireBaseDataSource implements CreateRoomRemoteDataSource {
           .doc();
       room.roomID = roomRef.id;
 
-      final roomData = room.toJson();
-      if (room.isPrivate) {
-        roomData['password'] = room.password;
-      }
-
-      await roomRef.set(roomData);
+      await roomRef.set(room.toJson());
     } on FirebaseException catch (e) {
       throw Exception(e.message ?? e.code);
     }

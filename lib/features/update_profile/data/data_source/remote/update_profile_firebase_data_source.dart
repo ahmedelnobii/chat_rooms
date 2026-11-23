@@ -105,10 +105,15 @@ class UpdateProfileFirebaseDataSource implements UpdateProfileRemoteDataSource {
 
       final updatedDoc = await userRef.get();
       final data = updatedDoc.data();
-      final email =
-          (data?[FirebaseKeys.emailField] as String?) ?? user.email ?? '';
+      if (data != null) {
+        return UserModel.fromJson(data);
+      }
 
-      return UserModel(name: trimmedName, email: email, userID: user.uid);
+      return UserModel(
+        name: trimmedName,
+        email: user.email ?? '',
+        userID: user.uid,
+      );
     } on FirebaseAuthException catch (e) {
       throw StateError(_mapAuthError(e));
     } on FirebaseException catch (e) {

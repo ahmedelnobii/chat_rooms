@@ -13,23 +13,24 @@ void main() {
   );
 
   test(
-    'rooms default to public and serialized room data never includes password',
+    'rooms default to public and public rooms do not serialize password',
     () {
-      final room = createRoom(password: 'not-for-listings');
+      final room = createRoom(password: 'not-for-public-rooms');
 
       expect(room.isPrivate, isFalse);
       expect(room.toJson(), isNot(contains('password')));
     },
   );
 
-  test('private status is serialized without the password', () {
+  test('private rooms serialize and deserialize password via model', () {
     final room = createRoom(isPrivate: true, password: 'secret');
     final json = room.toJson();
 
     expect(json['isPrivate'], isTrue);
-    expect(json, isNot(contains('password')));
-    expect(RoomModel.fromJson(json).isPrivate, isTrue);
-    expect(RoomModel.fromJson(json).password, isNull);
+    expect(json['password'], 'secret');
+    final parsed = RoomModel.fromJson(json);
+    expect(parsed.isPrivate, isTrue);
+    expect(parsed.password, 'secret');
   });
 
   test('parses active members map from json', () {

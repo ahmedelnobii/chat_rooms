@@ -25,12 +25,6 @@ class ProfileFirestoreDataSource implements ProfileRemoteDataSource {
       throw StateError('Profile document not found for the signed-in user.');
     }
 
-    final name = userData[FirebaseKeys.userName];
-    final email = userData[FirebaseKeys.emailField];
-    if (name is! String || email is! String) {
-      throw StateError('Profile document contains invalid user data.');
-    }
-
-    return UserModel(name: name, email: email, userID: userDocument.id);
+    return UserModel.fromJson(userData);
   }
 }

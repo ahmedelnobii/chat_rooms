@@ -41,12 +41,7 @@ class LikedFirestoreDataSource implements LikedRemoteDataSource {
             continue;
           }
 
-          validRooms.add(
-            RoomModel.fromJson({
-              ...document.data(),
-              FirebaseKeys.roomIDField: roomID,
-            }),
-          );
+          validRooms.add(RoomModel.fromJson(document.data()));
         }
         return List.unmodifiable(validRooms);
       });

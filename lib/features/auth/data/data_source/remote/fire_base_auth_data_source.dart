@@ -27,6 +27,8 @@ class FireBaseAuthDataSource implements RemoteAuthDataSource {
       return UserModel.fromJson(userDoc.data()!);
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
+    } on FirebaseException catch (e) {
+      throw Exception(e.message ?? e.code);
     }
   }
 
@@ -52,19 +54,27 @@ class FireBaseAuthDataSource implements RemoteAuthDataSource {
           .set(userModel.toJson());
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
+    } on FirebaseException catch (e) {
+      throw Exception(e.message ?? e.code);
     }
   }
 
   @override
   Future<UserModel?> getCurrentUser() async {
-    final firebaseUser = firebaseAuth.currentUser;
-    if (firebaseUser == null) return null;
-    final userDoc = await FirebaseFirestore.instance
-        .collection(FirebaseKeys.usersCollection)
-        .doc(firebaseUser.uid)
-        .get();
-    if (!userDoc.exists || userDoc.data() == null) return null;
-    return UserModel.fromJson(userDoc.data()!);
+    try {
+      final firebaseUser = firebaseAuth.currentUser;
+      if (firebaseUser == null) return null;
+      final userDoc = await FirebaseFirestore.instance
+          .collection(FirebaseKeys.usersCollection)
+          .doc(firebaseUser.uid)
+          .get();
+      if (!userDoc.exists || userDoc.data() == null) return null;
+      return UserModel.fromJson(userDoc.data()!);
+    } on FirebaseException catch (e) {
+      throw Exception(e.message ?? e.code);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   @override

@@ -39,10 +39,10 @@ class HomeFirestoreDataSource implements HomeRemoteDataSource {
           .doc(roomID)
           .get();
       final roomData = room.data();
+      if (!room.exists || roomData == null) return false;
 
-      return roomData != null &&
-          roomData[FirebaseKeys.roomIsPrivateField] == true &&
-          roomData['password'] == password;
+      final roomModel = RoomModel.fromJson(roomData);
+      return roomModel.isPrivate && roomModel.password == password;
     } on FirebaseException catch (e) {
       throw Exception(e.message ?? e.code);
     }
@@ -66,7 +66,8 @@ class HomeFirestoreDataSource implements HomeRemoteDataSource {
         throw StateError('Room "$roomID" was not found.');
       }
 
-      if (roomData[FirebaseKeys.roomCreatorIDField] != currentUserId) {
+      final room = RoomModel.fromJson(roomData);
+      if (room.creatorId != currentUserId) {
         throw StateError('Only the room creator can delete this room.');
       }
 
@@ -120,12 +121,7 @@ class HomeFirestoreDataSource implements HomeRemoteDataSource {
   }) {
     return query.snapshots().map((snapshot) {
       final rooms = snapshot.docs
-          .map(
-            (document) => RoomModel.fromJson({
-              ...document.data(),
-              FirebaseKeys.roomIDField: document.id,
-            }),
-          )
+          .map((document) => RoomModel.fromJson(document.data()))
           .toList();
 
       if (sortByOnlineMembers) {

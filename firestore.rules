@@ -44,8 +44,7 @@ service cloud.firestore {
         allow read, delete: if signedIn() && request.auth.uid == userID;
         allow create, update: if signedIn()
           && request.auth.uid == userID
-          && request.resource.data.roomID == roomID
-          && !request.resource.data.keys().hasAny(['password']);
+          && request.resource.data.roomID == roomID;
       }
     }
 

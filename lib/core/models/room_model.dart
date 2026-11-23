@@ -74,6 +74,7 @@ class RoomModel {
       roomName: json[FirebaseKeys.roomNameField] ?? '',
       description: json[FirebaseKeys.roomDescriptionField] ?? '',
       isPrivate: json[FirebaseKeys.roomIsPrivateField] ?? false,
+      password: json[FirebaseKeys.roomPasswordField] as String?,
       members: List.unmodifiable(parsedMembers),
       membersCount: parsedMembers.isNotEmpty ? parsedMembers.length : count,
       createdAt: _parseCreatedAt(json[FirebaseKeys.roomCreatedAtField]),
@@ -104,6 +105,8 @@ class RoomModel {
     FirebaseKeys.roomIDField: roomID,
     FirebaseKeys.roomCreatorIDField: creatorId,
     FirebaseKeys.roomIsPrivateField: isPrivate,
+    if (isPrivate && password != null)
+      FirebaseKeys.roomPasswordField: password,
     FirebaseKeys.roomMembersCountField: membersCount,
     FirebaseKeys.roomCreatedAtField: createdAt.toUtc().toIso8601String(),
   };

@@ -21,7 +21,7 @@ class ChatFireStoreDataSource implements ChatRemoteDataSource {
       throw StateError('Room "$roomID" was not found.');
     }
 
-    return RoomModel.fromJson({...data, FirebaseKeys.roomIDField: snapshot.id});
+    return RoomModel.fromJson(data);
   }
 
   @override
@@ -35,10 +35,7 @@ class ChatFireStoreDataSource implements ChatRemoteDataSource {
           if (!snapshot.exists || data == null) {
             throw StateError('Room "$roomID" was not found.');
           }
-          return RoomModel.fromJson({
-            ...data,
-            FirebaseKeys.roomIDField: snapshot.id,
-          });
+          return RoomModel.fromJson(data);
         });
   }
 
@@ -159,7 +156,8 @@ class ChatFireStoreDataSource implements ChatRemoteDataSource {
         throw StateError('Room "$roomID" was not found.');
       }
 
-      if (roomData[FirebaseKeys.roomCreatorIDField] != currentUserId) {
+      final room = RoomModel.fromJson(roomData);
+      if (room.creatorId != currentUserId) {
         throw StateError('Only the room creator can delete this room.');
       }
 

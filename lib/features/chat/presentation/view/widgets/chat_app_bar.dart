@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -81,7 +82,13 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: LivelyActionButton(
           tooltip: 'Back',
           backgroundColor: Colors.white.withValues(alpha: 0.2),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRouts.homeScreen);
+            }
+          },
           child: Icon(
             Icons.arrow_back_ios_new_rounded,
             color: Colors.white,

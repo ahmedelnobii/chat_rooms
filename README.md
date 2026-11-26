@@ -126,7 +126,6 @@ lib/
 |---------|---------|
 | `firebase_core` / `firebase_auth` | Firebase initialization & authentication |
 | `cloud_firestore` | Real-time database & presence transactions |
-| `cloud_functions` | Firebase Cloud Functions integration |
 | `google_sign_in` | OAuth2 Google authentication |
 | `flutter_bloc` | Cubit state management |
 | `get_it` + `injectable` | Service locator & code-generated DI |

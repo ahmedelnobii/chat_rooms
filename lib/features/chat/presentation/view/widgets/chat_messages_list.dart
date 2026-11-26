@@ -1,10 +1,12 @@
 import 'package:chat_rooms/core/consts/app_colors.dart';
+import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:chat_rooms/features/chat/presentation/cubit/chat_state.dart';
 import 'package:chat_rooms/features/chat/presentation/view/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatMessagesList extends StatelessWidget {
   final String roomID;
@@ -34,7 +36,11 @@ class ChatMessagesList extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         Navigator.of(dialogContext).pop();
-                        Navigator.of(context).pop();
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go(AppRouts.homeScreen);
+                        }
                       },
                       child: const Text('Quit'),
                     ),
@@ -70,8 +76,10 @@ class ChatMessagesList extends StatelessWidget {
                 backgroundColor: Colors.green,
               ),
             );
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRouts.homeScreen);
             }
           }
         },

@@ -43,37 +43,38 @@ class _LoginScreenState extends State<LoginScreen> {
             width: double.infinity,
             height: 230.h,
           ),
-          TweenAnimationBuilder<double>(
-            tween: Tween<double>(begin: 0, end: 1),
-            duration: const Duration(milliseconds: 2000),
-            curve: Curves.easeOutCubic,
-            builder: (context, progress, child) {
-              return Opacity(
-                opacity: progress,
-                child: Transform.translate(
-                  offset: Offset(0, 60 * (1 - progress)),
-                  child: child,
+          SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: 24.h),
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 2000),
+              curve: Curves.easeOutCubic,
+              builder: (context, progress, child) {
+                return Opacity(
+                  opacity: progress,
+                  child: Transform.translate(
+                    offset: Offset(0, 60 * (1 - progress)),
+                    child: child,
+                  ),
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 200.h, left: 16.w, right: 16.w),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30.r),
+                    topRight: Radius.circular(30.r),
+                    bottomLeft: Radius.circular(30.r),
+                    bottomRight: Radius.circular(30.r),
+                  ),
                 ),
-              );
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 200.h, left: 16.w, right: 16.w),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.r),
-                  topRight: Radius.circular(30.r),
-                  bottomLeft: Radius.circular(30.r),
-                  bottomRight: Radius.circular(30.r),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(16.r),
-                child: Form(
-                  key: formKey,
-                  child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16.r),
+                  child: Form(
+                    key: formKey,
                     child: Column(
                       crossAxisAlignment: .stretch,
                       children: [

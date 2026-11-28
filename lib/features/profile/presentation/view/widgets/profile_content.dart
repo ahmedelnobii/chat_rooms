@@ -12,9 +12,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileContent extends StatelessWidget {
-  UserModel? profile;
+  final UserModel? profile;
 
-  ProfileContent({super.key, required this.profile});
+  const ProfileContent({super.key, required this.profile});
 
   Future<void> _onEditProfileTap(BuildContext context) async {
     final currentProfile = profile;
@@ -38,6 +38,7 @@ class ProfileContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: EdgeInsets.only(bottom: 84.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -175,7 +176,7 @@ class ProfileContent extends StatelessWidget {
                 InkWell(
                   borderRadius: BorderRadius.circular(20.r),
                   onTap: () async {
-                    profile = null;
+                    context.read<ProfileCubit>().clearProfile();
                     await context.read<AuthCubit>().signOut();
                     if (context.mounted) {
                       context.go(AppRouts.loginScreen);

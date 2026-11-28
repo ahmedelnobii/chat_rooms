@@ -35,6 +35,7 @@ class _CustomTextFieledState extends State<CustomTextFieled> {
         ),
         SizedBox(height: 6.h),
         TextFormField(
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           obscureText:
               widget.fieldType == FieldType.password && !isPasswordVisible,
           validator: validator(widget.fieldType),

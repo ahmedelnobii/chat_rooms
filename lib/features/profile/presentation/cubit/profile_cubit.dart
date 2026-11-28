@@ -15,6 +15,11 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(state.copyWith(profile: profile, isLoading: false, clearError: true));
   }
 
+  void clearProfile() {
+    if (isClosed) return;
+    emit(const ProfileState());
+  }
+
   Future<void> loadProfile() async {
     emit(state.copyWith(isLoading: true, clearError: true));
 

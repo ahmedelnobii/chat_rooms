@@ -112,33 +112,43 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Scaffold(
                   resizeToAvoidBottomInset: false,
                   backgroundColor: Colors.transparent,
-                  body: Center(
-                    child: RepaintBoundary(
-                      child: Container(
-                        height: 750.h,
-                        width: 340.w,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 10,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
+                  body: SafeArea(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 12.h,
                         ),
-                        child: Column(
-                          children: [
-                            ChatAppBar(
-                              roomID: widget.roomID,
-                              initialRoom: widget.initialRoom,
+                        child: RepaintBoundary(
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            Expanded(
-                              child: ChatMessagesList(roomID: widget.roomID),
+                            child: Column(
+                              children: [
+                                ChatAppBar(
+                                  roomID: widget.roomID,
+                                  initialRoom: widget.initialRoom,
+                                ),
+                                Expanded(
+                                  child: ChatMessagesList(
+                                    roomID: widget.roomID,
+                                  ),
+                                ),
+                                ChatInputBar(roomID: widget.roomID),
+                              ],
                             ),
-                            ChatInputBar(roomID: widget.roomID),
-                          ],
+                          ),
                         ),
                       ),
                     ),

@@ -44,10 +44,16 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
 
     try {
+      final box = context.findRenderObject() as RenderBox?;
+      final shareOrigin = box != null && box.hasSize
+          ? box.localToGlobal(Offset.zero) & box.size
+          : const Rect.fromLTWH(0, 0, 1, 1);
+
       await SharePlus.instance.share(
         ShareParams(
           uri: roomUri,
           subject: 'Join ${room.roomName} on Chat Rooms',
+          sharePositionOrigin: shareOrigin,
         ),
       );
     } on PlatformException catch (error) {
@@ -75,6 +81,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      primary: false,
       toolbarHeight: 68.h,
       elevation: 0,
       leadingWidth: 52.w,

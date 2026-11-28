@@ -108,6 +108,7 @@ class ChatMessagesList extends StatelessWidget {
           }
           return ListView.builder(
             reverse: true,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             itemCount: messages.length,
             itemBuilder: (_, i) {
               return ChatBubble(

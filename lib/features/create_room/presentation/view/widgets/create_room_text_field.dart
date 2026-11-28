@@ -42,6 +42,7 @@ class CreateRoomTextField extends StatelessWidget {
         SizedBox(height: 8.h),
         TextFormField(
           controller: controller,
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           validator: validator,
           maxLines: maxLines,
           minLines: minLines,

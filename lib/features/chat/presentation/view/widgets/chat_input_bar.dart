@@ -79,6 +79,8 @@ class _ChatInputBarState extends State<ChatInputBar> {
                 child: TextField(
                   controller: _controller,
                   textInputAction: TextInputAction.send,
+                  onTapOutside: (_) =>
+                      FocusManager.instance.primaryFocus?.unfocus(),
                   onSubmitted: (_) => _sendMessage(),
                   decoration: InputDecoration(
                     hintText: "Type a message",

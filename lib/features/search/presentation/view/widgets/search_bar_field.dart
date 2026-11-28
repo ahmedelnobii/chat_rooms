@@ -40,6 +40,7 @@ class _SearchBarFieldState extends State<SearchBarField> {
         return TextField(
           controller: _controller,
           autofocus: true,
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           textInputAction: TextInputAction.search,
           onSubmitted: (_) => _triggerSearch(),
           style: TextStyle(color: Colors.black87, fontSize: 14.sp),

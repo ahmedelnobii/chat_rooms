@@ -117,10 +117,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               padding: EdgeInsets.all(16.r),
                               child: Form(
                                 key: formKey,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: .stretch,
-                                    children: [
+                                child: Column(
+                                  crossAxisAlignment: .stretch,
+                                  children: [
                                       CustomTextFieled(
                                         fieldType: .name,
                                         textField: "Name",
@@ -365,7 +364,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ),

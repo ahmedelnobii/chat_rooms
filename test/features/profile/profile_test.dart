@@ -29,6 +29,9 @@ void main() {
     cubit.setProfile(updated);
     expect(cubit.state.profile?.name, 'Ahmed Updated');
 
+    cubit.clearProfile();
+    expect(cubit.state.profile, isNull);
+
     await cubit.close();
   });
 

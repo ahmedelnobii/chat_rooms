@@ -47,31 +47,38 @@ class _MainScreenState extends State<MainScreen> {
             : null,
         extendBody: true,
         body: widget.child,
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: 16.h, right: 8.w, left: 8.w),
-          child: ClipRRect(
-            borderRadius: BorderRadiusGeometry.circular(16.r),
-            child: BottomNavigationBar(
-              backgroundColor: Colors.grey.shade200,
-              selectedItemColor: AppColors.primary,
-              currentIndex: currentIndex,
-              onTap: (value) {
-                context.go(goto(value));
-              },
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.message_rounded),
-                  label: "chats",
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 12.h, right: 8.w, left: 8.w),
+            child: ClipRRect(
+              borderRadius: BorderRadiusGeometry.circular(16.r),
+              child: MediaQuery.removePadding(
+                context: context,
+                removeBottom: true,
+                child: BottomNavigationBar(
+                  backgroundColor: Colors.grey.shade200,
+                  selectedItemColor: AppColors.primary,
+                  currentIndex: currentIndex,
+                  onTap: (value) {
+                    context.go(goto(value));
+                  },
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.message_rounded),
+                      label: "chats",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.favorite_border),
+                      label: "liked",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person),
+                      label: "profile",
+                    ),
+                  ],
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.favorite_border),
-                  label: "liked",
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: "profile",
-                ),
-              ],
+              ),
             ),
           ),
         ),

@@ -82,30 +82,33 @@ class _RoomPasswordDialogState extends State<RoomPasswordDialog> {
                 ),
               ],
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Enter the password to join this room.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey.shade600, height: 1.4),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Room password',
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w600,
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Enter the password to join this room.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey.shade600, height: 1.4),
                   ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  textInputAction: TextInputAction.done,
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Room password',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    onTapOutside: (_) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
+                    textInputAction: TextInputAction.done,
                   onSubmitted: (_) => _verifyPassword(),
                   style: const TextStyle(color: Colors.black87, fontSize: 14),
                   decoration: InputDecoration(
@@ -175,6 +178,7 @@ class _RoomPasswordDialogState extends State<RoomPasswordDialog> {
                         ),
                 ),
               ],
+            ),
             ),
             actions: [
               Row(

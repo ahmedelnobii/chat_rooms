@@ -52,6 +52,7 @@ class LikedRoomsList extends StatelessWidget {
     }
 
     return ListView.builder(
+      padding: EdgeInsets.only(bottom: 80.h),
       itemCount: state.rooms.length,
       itemBuilder: (context, index) {
         final room = state.rooms[index];

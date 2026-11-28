@@ -1,10 +1,10 @@
 import 'package:chat_rooms/core/consts/app_colors.dart';
 import 'package:chat_rooms/core/routes/app_routs.dart';
 import 'package:chat_rooms/features/auth/data/model/user_model.dart';
+import 'package:chat_rooms/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:chat_rooms/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:chat_rooms/features/profile/presentation/view/widgets/profile_info_shimmer.dart';
 import 'package:chat_rooms/features/update_profile/presentation/view/widgets/reauth_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,9 +12,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileContent extends StatelessWidget {
-  final UserModel? profile;
+  UserModel? profile;
 
-  const ProfileContent({super.key, required this.profile});
+  ProfileContent({super.key, required this.profile});
 
   Future<void> _onEditProfileTap(BuildContext context) async {
     final currentProfile = profile;
@@ -174,9 +174,12 @@ class ProfileContent extends StatelessWidget {
                 Divider(height: 1, indent: 16.w, endIndent: 16.w),
                 InkWell(
                   borderRadius: BorderRadius.circular(20.r),
-                  onTap: () {
-                    FirebaseAuth.instance.signOut();
-                    context.go(AppRouts.loginScreen);
+                  onTap: () async {
+                    profile = null;
+                    await context.read<AuthCubit>().signOut();
+                    if (context.mounted) {
+                      context.go(AppRouts.loginScreen);
+                    }
                   },
                   child: const ListTile(
                     leading: Icon(Icons.logout, color: Colors.red),

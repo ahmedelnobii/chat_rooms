@@ -15,4 +15,7 @@ abstract class RemoteAuthDataSource {
   Future<UserModel?> getCurrentUser();
 
   Future<void> resetPassword(String email);
+
+  /// Removes the current user from any active room members maps and signs out.
+  Future<void> signOut();
 }

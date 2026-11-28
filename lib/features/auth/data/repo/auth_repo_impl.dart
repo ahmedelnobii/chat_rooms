@@ -74,4 +74,14 @@ class AuthRepoImpl implements AuthRepo {
       return Left(Failer(e.toString().replaceAll('Exception: ', '')));
     }
   }
+
+  @override
+  Future<Either<Failer, void>> signOut() async {
+    try {
+      await remoteAuthDataSource.signOut();
+      return const Right(null);
+    } catch (e) {
+      return Left(Failer(e.toString().replaceAll('Exception: ', '')));
+    }
+  }
 }

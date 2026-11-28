@@ -81,4 +81,10 @@ class AuthCubit extends Cubit<AuthStates> {
       (_) => emit(ResetPasswordSuccessState()),
     );
   }
+
+  Future<void> signOut() async {
+    await authRepository.signOut();
+    cuurentUser = null;
+    emit(AuthInitialState());
+  }
 }

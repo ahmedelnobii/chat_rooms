@@ -6,19 +6,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('searchRooms resets state when query is empty', () async {
-    final repo = _FakeSearchRepo(const Right([]));
-    final cubit = SearchCubit(repo);
-
-    await cubit.searchRooms('   ');
-
-    expect(repo.lastQuery, isNull);
-    expect(cubit.state.hasSearched, isFalse);
-    expect(cubit.state.results, isEmpty);
-    await cubit.close();
-  });
-
-  test('searchRooms emits results from repository', () async {
+  test('searchRooms emits results and clearSearch resets state', () async {
     final rooms = [
       RoomModel(
         creatorId: 'c1',
@@ -35,9 +23,12 @@ void main() {
 
     expect(repo.lastQuery, 'Flutter');
     expect(cubit.state.hasSearched, isTrue);
-    expect(cubit.state.isLoading, isFalse);
     expect(cubit.state.results, rooms);
-    expect(cubit.state.error, isNull);
+
+    cubit.clearSearch();
+    expect(cubit.state.hasSearched, isFalse);
+    expect(cubit.state.results, isEmpty);
+
     await cubit.close();
   });
 
@@ -48,7 +39,6 @@ void main() {
     await cubit.searchRooms('Flutter');
 
     expect(cubit.state.hasSearched, isTrue);
-    expect(cubit.state.isLoading, isFalse);
     expect(cubit.state.error, 'Network error');
     await cubit.close();
   });

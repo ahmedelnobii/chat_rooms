@@ -139,4 +139,39 @@ class FireBaseAuthDataSource implements RemoteAuthDataSource {
       throw Exception(e.toString());
     }
   }
+
+  @override
+  Future<void> signOut() async {
+    final uid = firebaseAuth.currentUser?.uid;
+    if (uid != null && uid.isNotEmpty) {
+      try {
+        final firestore = FirebaseFirestore.instance;
+        final activeRoomsSnap = await firestore
+            .collection(FirebaseKeys.allRoomsCollection)
+            .where('${FirebaseKeys.roomMembersField}.$uid', isGreaterThan: '')
+            .get();
+
+        for (final doc in activeRoomsSnap.docs) {
+          final data = doc.data();
+          final rawMembers = data[FirebaseKeys.roomMembersField];
+          final members = rawMembers is Map
+              ? Map<String, dynamic>.from(rawMembers)
+              : <String, dynamic>{};
+          members.remove(uid);
+
+          await doc.reference.update({
+            '${FirebaseKeys.roomMembersField}.$uid': FieldValue.delete(),
+            FirebaseKeys.roomMembersCountField: members.length,
+          });
+        }
+      } catch (_) {
+        // Ignore presence cleanup errors so sign-out never gets blocked.
+      }
+    }
+
+    await firebaseAuth.signOut();
+    try {
+      await GoogleSignIn.instance.signOut();
+    } catch (_) {}
+  }
 }

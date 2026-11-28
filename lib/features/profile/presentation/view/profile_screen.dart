@@ -19,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
           child: BlocBuilder<ProfileCubit, ProfileState>(
             builder: (context, state) {
               if (state.isLoading && state.profile == null) {
-                return const ProfileContent(profile: null);
+                return ProfileContent(profile: null);
               }
 
               if (state.error != null && state.profile == null) {

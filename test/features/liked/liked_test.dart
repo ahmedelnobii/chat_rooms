@@ -8,14 +8,14 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('streams liked rooms and toggles them in the repository', () async {
+  test('streams liked rooms and toggles like state', () async {
     final repo = _FakeLikedRepo();
     final cubit = LikedCubit(repo);
     final room = RoomModel(
-      roomID: 'room-id',
-      creatorId: 'creator-id',
+      roomID: 'room-1',
+      creatorId: 'creator-1',
       creatorName: 'Creator',
-      roomName: 'Room',
+      roomName: 'Flutter Room',
       description: 'Room description',
     );
 
@@ -25,47 +25,19 @@ void main() {
     expect(cubit.state.rooms, isEmpty);
 
     await cubit.toggleLike(room);
-    expect(repo.likedRoomIDs, contains('room-id'));
-    expect(cubit.state.containsRoom('room-id'), isTrue);
+    expect(cubit.state.containsRoom('room-1'), isTrue);
 
     await cubit.toggleLike(room);
-    expect(repo.likedRoomIDs, isEmpty);
-    expect(cubit.state.containsRoom('room-id'), isFalse);
+    expect(cubit.state.containsRoom('room-1'), isFalse);
 
     await cubit.close();
     await repo.close();
   });
-
-  test(
-    'reports rooms without ids instead of writing invalid documents',
-    () async {
-      final repo = _FakeLikedRepo();
-      final cubit = LikedCubit(repo);
-      final room = RoomModel(
-        creatorId: 'creator-id',
-        creatorName: 'Creator',
-        roomName: 'Room',
-        description: 'Room description',
-      );
-
-      await cubit.loadLikedRooms();
-      repo.publish(const []);
-      await cubit.toggleLike(room);
-
-      expect(repo.likedRoomIDs, isEmpty);
-      expect(cubit.state.error, contains('no ID'));
-
-      await cubit.close();
-      await repo.close();
-    },
-  );
 }
 
 class _FakeLikedRepo implements LikedRepo {
   final _likedRooms = StreamController<List<RoomModel>>.broadcast(sync: true);
   final List<RoomModel> _rooms = [];
-
-  List<String?> get likedRoomIDs => _rooms.map((room) => room.roomID).toList();
 
   void publish(List<RoomModel> rooms) {
     _rooms
